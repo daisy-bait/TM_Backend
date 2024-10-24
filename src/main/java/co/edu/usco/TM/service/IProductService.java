@@ -1,7 +1,7 @@
 
 package co.edu.usco.TM.service;
 
-import co.edu.usco.TM.entity.Product;
+import co.edu.usco.TM.persistence.entity.commerce.Product;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;

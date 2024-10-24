@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Lista de Makers</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Lista de Makers</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre de Usuario</th>
+                        <th>Email</th>
+                        <th>Nombre del Negocio</th>
+                        <th>Dirección</th>
+                        <th>Teléfono</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="maker : ${makers}">
+                        <td th:text="${maker.id}">1</td>
+                        <td th:text="${maker.username}"></td>
+                        <td th:text="${maker.email}"></td>
+                        <td th:text="${maker.name}"></td>
+                        <td th:text="${maker.address}"></td>
+                        <td th:text="${maker.phone}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

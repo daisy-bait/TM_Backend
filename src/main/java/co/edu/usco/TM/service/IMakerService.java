@@ -1,7 +1,7 @@
 
 package co.edu.usco.TM.service;
 
-import co.edu.usco.TM.entity.Maker;
+import co.edu.usco.TM.persistence.entity.commerce.Maker;
 import java.util.List;
 import java.util.Optional;
 

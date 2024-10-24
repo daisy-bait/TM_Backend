@@ -1,18 +1,20 @@
 
 package co.edu.usco.TM.service.impl;
 
-import co.edu.usco.TM.entity.Product;
-import co.edu.usco.TM.repository.ProductRepo;
+import co.edu.usco.TM.persistence.entity.commerce.Product;
 import co.edu.usco.TM.service.IProductService;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import co.edu.usco.TM.persistence.repository.ProductRepository;
 
+@Service
 public class ProductService implements IProductService{
 
     @Autowired
-    ProductRepo productRepo;
+    ProductRepository productRepo;
     
     @Override
     public List<Product> findAll() {

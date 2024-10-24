@@ -1,19 +1,23 @@
 
 package co.edu.usco.TM.service.impl;
 
-import co.edu.usco.TM.entity.Maker;
-import co.edu.usco.TM.repository.MakerRepo;
+import co.edu.usco.TM.persistence.entity.commerce.Maker;
 import co.edu.usco.TM.service.IMakerService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import co.edu.usco.TM.persistence.repository.MakerRepository;
+import co.edu.usco.TM.persistence.repository.RoleRepository;
 
 @Service
 public class MakerService implements IMakerService{
     
     @Autowired
-    MakerRepo makerRepo;
+    MakerRepository makerRepo;
+    
+    @Autowired
+    RoleRepository roleRepo;
     
     @Override
     public List<Maker> findAll() {
@@ -27,6 +31,7 @@ public class MakerService implements IMakerService{
     
     @Override
     public void save(Maker maker) {
+        //maker.setRole(roleRepo.);
         makerRepo.save(maker);
     }
     

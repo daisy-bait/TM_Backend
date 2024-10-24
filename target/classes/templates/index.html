@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="In T&M, encontrarás todo lo que necesitas para tus hijos peluditos" />
+    <link rel="icon" th:href="@{/icons/logo.svg}" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="@{/icons/logo.svg}" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/global/nav.css}">
+    <title>Bienvenido a T&M!</title>
+</head>
+
+<body>
+    <nav>
+        <div class="piece-1">
+            <a th:href="@{/}"><img class="icon-home" th:src="@{/icons/home-icon.svg}" alt="Ir a Inicio" /></a>
+            <div class="search-box">
+                <img th:src="@{/icons/search-icon.svg}" alt="Buscar productos de mascotas" />
+                <input type="search" placeholder="¿Qué necesita tu mascota?">
+            </div>
+        </div>
+        <ol>
+            <li><a href="#"><img th:src="@{/icons/ubi-cute.svg}" />Agregar Dirección</a></li>
+            <li><a href="#">Crear Cuenta</a></li>
+            <li><a href="#"><img th:src="@{/icons/user-icon.svg}" /></a></li>
+        </ol>
+    </nav>
+</body>
+
+</html>

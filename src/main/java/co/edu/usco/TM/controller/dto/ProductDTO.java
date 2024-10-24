@@ -1,7 +1,7 @@
 
 package co.edu.usco.TM.controller.dto;
 
-import co.edu.usco.TM.entity.Maker;
+import co.edu.usco.TM.persistence.entity.commerce.Maker;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
