@@ -1,0 +1,213 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+:root {
+  --main-color: #b98e6e;
+  --contorn-color: #534439;
+  --fill-color: #d9bba0;
+  --black-color: #262225;
+  --gray-color: #d9d2d3;
+  --main-2-color: #71a281;
+  --contorn-2-color: #3f6e4f;
+}
+
+* {
+  font-family: "Poppins", sans-serif;
+  transition: 0.3s ease-in-out all;
+}
+
+header {
+  width: 100%;
+  position: fixed;
+  z-index: 100;
+}
+
+main {
+  padding-top: 173px;
+}
+
+/* NAVBAR PRINCIPAL */
+
+.first-bar {
+  background-color: var(--main-color);
+  height: 90px;
+}
+
+nav .container-fluid {
+  margin: 0 70px;
+}
+
+.nav-link span {
+  transition: 0.3s ease-in-out all;
+  border-radius: 12px;
+}
+
+.nav-link span:hover {
+  color: var(--contorn-color);
+  background-color: #fff;
+}
+
+nav span {
+  color: #ffffff;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+nav .search-box input {
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  width: 580px;
+  height: 48px;
+  border-radius: 12px;
+  padding-left: 60px;
+  transition: 0.3s ease-in-out all;
+}
+
+nav .search-box img {
+  position: absolute;
+  padding-left: 17px;
+  cursor: pointer;
+}
+
+/* NAVBAR SECUNDARIA */
+
+.second-bar {
+  height: 63px;
+  background-color: var(--gray-color);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+nav .nav-button {
+  background-color: var(--main-2-color);
+  border-radius: 12px;
+  border: 0;
+}
+
+.second-bar .nav-button {
+  padding: 8px 16px;
+}
+
+/* BODY */
+
+h1 {
+  color: var(--contorn-2-color);
+  font-size: 64px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+h2 {
+  color: var(--black-color);
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.green {
+  color: var(--contorn-2-color);
+}
+
+.gray {
+  color: #928383;
+}
+
+p {
+  color: var(--black-color);
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.big-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Para navegadores WebKit como Chrome y Safari */
+::-webkit-scrollbar {
+  width: 12px; /* Ancho de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f100; /* Color de fondo del track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #3f6e4f; /* Color de la barra */
+  border-radius: 10px; /* Bordes redondeados */
+  border: 3px solid #f1f1f1; /* Espacio entre barra y contenedor */
+}
+
+@media (min-width: 1400px) {
+  nav ol {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 1400px) {
+  .navbar-collapse {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1400px) {
+  nav .search-box {
+    max-width: 100%;
+    position: relative;
+  }
+}
+
+@media (max-width: 768px) {
+  nav .search-box input {
+    width: 400px;
+  }
+
+  nav .container-fluid {
+    margin: 0 15px; /* Ajusta los márgenes para móviles */
+  }
+
+  /* Ajustar la barra de búsqueda */
+  nav .search-box input {
+    width: 100%; /* La barra de búsqueda ocupa todo el ancho */
+    font-size: 16px; /* Reducir el tamaño de la fuente */
+    padding-left: 45px; /* Ajustar padding para el icono */
+  }
+
+  nav .search-box img {
+    padding-left: 10px; /* Ajustar la posición del icono en móviles */
+  }
+
+  /* Cambiar el tamaño de los enlaces de navegación */
+  nav span {
+    font-size: 16px;
+  }
+
+  /* Centrar el contenido de la navbar en móvil */
+  .navbar-nav {
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  /* Cambiar los encabezados */
+  h1 {
+    font-size: 36px; /* Tamaño más pequeño para móviles */
+  }
+
+  h2 {
+    font-size: 24px; /* Reducir tamaño */
+  }
+
+  p {
+    font-size: 16px;
+  }
+}
