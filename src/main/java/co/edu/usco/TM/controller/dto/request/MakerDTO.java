@@ -1,10 +1,10 @@
-package co.edu.usco.TM.controller.dto;
+package co.edu.usco.TM.controller.dto.request;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-@Data
+@Getter
+@Setter
 @SuperBuilder
 @NoArgsConstructor
 public class MakerDTO extends UserDTO{

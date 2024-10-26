@@ -1,8 +1,8 @@
 package co.edu.usco.TM.controller;
 
-import co.edu.usco.TM.controller.dto.ProductDTO;
+import co.edu.usco.TM.controller.dto.request.ProductDTO;
 import co.edu.usco.TM.persistence.entity.commerce.Product;
-import co.edu.usco.TM.service.IProductService;
+import co.edu.usco.TM.service.noImpl.IProductService;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;

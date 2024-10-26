@@ -1,5 +1,5 @@
 
-package co.edu.usco.TM.service.impl;
+package co.edu.usco.TM.service.security;
 
 import co.edu.usco.TM.persistence.entity.administration.UserEntity;
 import co.edu.usco.TM.persistence.repository.UserRepository;

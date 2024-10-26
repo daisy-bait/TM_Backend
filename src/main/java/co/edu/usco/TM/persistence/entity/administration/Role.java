@@ -4,10 +4,13 @@ package co.edu.usco.TM.persistence.entity.administration;
 import jakarta.persistence.*;
 import lombok.*;
 
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "roles")
 @Entity
-@Data
-@NoArgsConstructor
 public class Role {
 
     @Id
@@ -18,8 +21,5 @@ public class Role {
     @Column(name = "rol_name")
     @Enumerated(EnumType.STRING)
     private RoleEnum name;
-    
-    @Column(name = "rol_enabled")
-    private boolean isEnabled;
     
 }

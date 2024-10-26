@@ -1,12 +1,12 @@
 
-package co.edu.usco.TM.controller.dto;
+package co.edu.usco.TM.controller.dto.request;
 
 import co.edu.usco.TM.persistence.entity.administration.Role;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-@Data
+@Getter
+@Setter
 @SuperBuilder
 @NoArgsConstructor
 public class UserDTO {

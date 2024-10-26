@@ -1,8 +1,10 @@
 package co.edu.usco.TM.controller;
 
-import co.edu.usco.TM.controller.dto.MakerDTO;
+import co.edu.usco.TM.controller.dto.request.MakerDTO;
 import co.edu.usco.TM.persistence.entity.commerce.Maker;
-import co.edu.usco.TM.service.IMakerService;
+import co.edu.usco.TM.service.noImpl.IMakerService;
+import co.edu.usco.TM.service.noImpl.IOwnerService;
+import co.edu.usco.TM.service.noImpl.IVetService;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -21,10 +23,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/api/maker")
 @RestController
-public class MakerController {
+public class AdminController {
     
     @Autowired
     private IMakerService makerService;
+    
+    @Autowired
+    private IOwnerService ownerService;
+    
+    @Autowired
+    private IVetService vetService;
     
     @GetMapping("/find/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {

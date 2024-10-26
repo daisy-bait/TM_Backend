@@ -4,16 +4,18 @@ package co.edu.usco.TM.persistence.entity.administration;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+
+
+@SuperBuilder
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
-@Entity
-@SuperBuilder
-@Data
-@NoArgsConstructor
 public class UserEntity {
     
     @Id
