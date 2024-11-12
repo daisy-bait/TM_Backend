@@ -4,6 +4,7 @@ package co.edu.usco.TM.persistence.entity.administration;
 import jakarta.persistence.*;
 import lombok.*;
 
+@ToString
 @Getter
 @Setter
 @Builder
@@ -19,7 +20,9 @@ public class Role {
     private Long id;
     
     @Column(name = "rol_name")
-    @Enumerated(EnumType.STRING)
-    private RoleEnum name;
+    private String name;
+    
+    @Column(name = "rol_enabled")
+    private boolean enabled;
     
 }

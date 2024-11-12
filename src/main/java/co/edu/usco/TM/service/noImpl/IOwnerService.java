@@ -1,17 +1,27 @@
 
 package co.edu.usco.TM.service.noImpl;
 
-import co.edu.usco.TM.persistence.entity.veterinary.Owner;
+import co.edu.usco.TM.dto.request.veterinary.ReqOwnerDTO;
+import co.edu.usco.TM.dto.response.veterinary.ResOwnerDTO;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface IOwnerService {
     
-    List<Owner> findAll();
+    List<ResOwnerDTO> findAll();
     
-    Optional<Owner> findById(Long id);
+    ResOwnerDTO findById(Long id);
     
-    void save(Owner owner);
+    ResOwnerDTO save(ReqOwnerDTO ownerDTO, Long ownerID);
+
+    ResOwnerDTO basicDetails(Long id);
+
+    ResOwnerDTO uploadWithImage(
+            ReqOwnerDTO ownerDTO,
+            MultipartFile file,
+            Long ownerID) throws IOException;
     
     void delete(Long id);
     

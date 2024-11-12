@@ -1,17 +1,20 @@
 
 package co.edu.usco.TM.service.noImpl;
 
-import co.edu.usco.TM.persistence.entity.veterinary.Veterinarian;
+import co.edu.usco.TM.dto.request.veterinary.ReqVetDTO;
+import co.edu.usco.TM.dto.response.veterinary.ResVetDTO;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 public interface IVetService {
 
-    List<Veterinarian> findAll();
+    List<ResVetDTO> findAll();
     
-    Optional<Veterinarian> findById(Long id);
+    ResVetDTO findById(Long id);
     
-    void save(Veterinarian vet);
+    ResVetDTO save(ReqVetDTO vetDTO, MultipartFile image, MultipartFile degree, Long vetID) throws IOException;
     
     void delete(Long id);
     

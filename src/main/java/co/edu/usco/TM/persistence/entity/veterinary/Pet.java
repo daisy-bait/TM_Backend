@@ -1,10 +1,13 @@
 package co.edu.usco.TM.persistence.entity.veterinary;
 
+import co.edu.usco.TM.dto.base.PetSpecie;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -18,20 +21,28 @@ public class Pet {
     @Column(name = "pet_id")
     private Long id;
 
-    @Column(name = "pet_name")
+    @Column(name = "pet_name", nullable = false)
     private String name;
+    
+    @Column(name = "pet_specie", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PetSpecie specie;
 
     @Column(name = "pet_weight")
     private Double weight;
 
-    @Column(name = "pet_years")
-    private int years;
-
-    @Column(name = "pet_months")
+    @Column(name = "pet_age_months")
     private int months;
 
-    @ManyToOne
-    @JoinColumn(name = "pet_own_id", nullable = false)
+    @Column(name = "pet_birth_date")
+    @Temporal(TemporalType.DATE)
+    private LocalDate birthDate;
+    
+    @Column(name = "pet_image_url")
+    private String imgURL;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "own_id", nullable = false)
     @JsonIgnore
     private Owner owner;
 
