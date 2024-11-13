@@ -4,9 +4,15 @@ package co.edu.usco.TM.config;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import java.util.ArrayList;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
@@ -25,8 +31,25 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
                         url = "https://github.com/kadanarpa",
                         email = "u20231213624@usco.edu.co"
                 )
-
+        ),
+        servers = {
+                @Server(
+                        description = "DEV SERVER",
+                        url = "http://localhost:8080"
+                )
+        },
+        security = @SecurityRequirement(
+                name = "Security Token"
         )
+)
+@SecurityScheme(
+        name = "Security Token",
+        description = "Token de Acceso para la API, generalo en /api/auth el método POST de login",
+        type = SecuritySchemeType.HTTP,
+        paramName = HttpHeaders.AUTHORIZATION,
+        in = SecuritySchemeIn.HEADER,
+        scheme = "bearer",
+        bearerFormat = "JWT"
 )
 @Configuration
 public class OpenApiConfig {

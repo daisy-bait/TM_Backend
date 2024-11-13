@@ -15,24 +15,4 @@ public class TMRestApplication {
         SpringApplication.run(TMRestApplication.class, args);
     }
 
-//    @Bean
-//    public CommandLineRunner init(RoleRepository roleRepo) {
-//        return args -> {
-//            
-//                // Roles
-//                Role adminRole = Role.builder()
-//                        .name("ADMIN")
-//                        .build();
-//                
-//                Role ownerRole = Role.builder()
-//                        .name("OWNER")
-//                        .build();
-//                
-//                Role vetRole = Role.builder()
-//                        .name("VETERINARIAN")
-//                        .build();
-//                
-//                roleRepo.saveAll(List.of(adminRole, ownerRole, vetRole));
-//        };
-//    }
 }

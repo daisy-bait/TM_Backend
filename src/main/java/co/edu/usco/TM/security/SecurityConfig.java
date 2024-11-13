@@ -42,13 +42,27 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> {
                     // Configure Public Endpoints
-                    request.requestMatchers(HttpMethod.POST, "/api/owner/save", "/api/auth/**").permitAll();
+                    request.requestMatchers(HttpMethod.POST,
+                            "/api/owner/create",
+                            "/api/vet/create",
+                            "/api/auth/**").permitAll();
+                    request.requestMatchers(HttpMethod.GET,
+                            // Swagger
+                            "/swagger-ui.html",
+                            "/swagger-ui/**",
+                            "/v3/api-docs",
+                            "/v3/api-docs/**",
+                            "/v3/api-docs.yaml",
+                            "/v3/api-docs/swagger-config").permitAll();
 
                     //Configure Private Endpoints
-                    request.requestMatchers(HttpMethod.GET, "/api/owner/details").denyAll();
+                    request.requestMatchers(HttpMethod.GET, "/api/owner/details").hasRole("OWNER");
+                    request.requestMatchers(HttpMethod.PUT, "/api/owner/update").hasRole("OWNER");
+                    request.requestMatchers(HttpMethod.GET, "/api/vet/details").hasRole("VET");
+                    request.requestMatchers(HttpMethod.PUT, "/api/vet/update").hasRole("VET");
                     
                     // Configure No Specified Endpoints
-                    request.anyRequest().permitAll();
+                    request.anyRequest().authenticated();
                 })
                 .addFilterBefore(new JwtTokenValidator(jwtUtil), BasicAuthenticationFilter.class);
 
