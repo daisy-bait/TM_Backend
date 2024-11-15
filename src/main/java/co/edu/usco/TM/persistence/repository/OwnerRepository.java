@@ -13,9 +13,9 @@ import org.springframework.stereotype.Repository;
 public interface OwnerRepository extends JpaRepository<Owner, Long> {
 
     @Query(value = "SELECT o FROM Owner o " +
-            "WHERE (:name IS NULL OR u.name ILIKE %:name%) " +
-            "AND (:username IS NULL OR u.username ILIKE %:username%) " +
-            "AND (:email IS NULL OR u.email ILIKE %:email%)",
+            "WHERE (:name IS NULL OR o.name ILIKE %:name%) " +
+            "AND (:username IS NULL OR o.username ILIKE %:username%) " +
+            "AND (:email IS NULL OR o.email ILIKE %:email%)",
             nativeQuery = false)
     public Page<Owner> findAllOwners(
             @Param("name") String name,

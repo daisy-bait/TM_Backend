@@ -24,7 +24,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             nativeQuery = false)
     public Page<UserEntity> findAllUsers(
             @Param("name") String name,
-            @Param("username") String useranme,
+            @Param("username") String username,
             @Param("email") String email,
             Pageable pageable);
 }
