@@ -3,6 +3,7 @@ package co.edu.usco.TM.controller.veterinary;
 import co.edu.usco.TM.dto.request.veterinary.ReqVetDTO;
 import co.edu.usco.TM.dto.response.veterinary.ResVetDTO;
 import co.edu.usco.TM.security.jwt.JwtUtil;
+import co.edu.usco.TM.service.auth.UserDetailsService;
 import co.edu.usco.TM.service.noImpl.IVetService;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +28,7 @@ public class VetController {
     private IVetService vetService;
 
     @Autowired
-    JwtUtil jwtUtil;
+    UserDetailsService userDetailsService;
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Crear un veterinario", description = "Ingresa datos válidos para los campos requeridos")
@@ -40,7 +41,6 @@ public class VetController {
             @RequestPart(name = "degree", value = "degree", required = false) MultipartFile degree) throws IOException {
 
         ResVetDTO response;
-
         response = vetService.save(vetDTO, image, degree, null);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -48,11 +48,11 @@ public class VetController {
 
     @GetMapping(value = "/details")
     @Operation(summary = "Obtener Detalles de un Veterinario", description = "Obtiene los detalles de un Veterinario Logeado en base a su token.")
-    private ResponseEntity<ResVetDTO> getVetDetails(@RequestHeader("Authorization") String token) {
+    private ResponseEntity<ResVetDTO> getVetDetails() {
         try {
 
-            Long vetID = jwtUtil.getUserID(token);
-            ResVetDTO vetDetails = vetService.findById(vetID);
+            Long vetID = userDetailsService.getAuthenticatedUserID();
+            ResVetDTO vetDetails = vetService.basicDetails(vetID);
 
             if (vetDetails == null) {
                 return ResponseEntity.ok(vetDetails);
@@ -69,15 +69,13 @@ public class VetController {
             "así como sus nuevos datos a actualizar. El token es para extraer su ID e insertarselo al nuevo modelo " +
             "de Veterinario que se solicita actualizar")
     private ResponseEntity<ResVetDTO> updateVetDetails(
-            @Parameter(description = "Token necesario para validar la sesión del usuario, crea uno en /login")
-            @RequestHeader("Authorization") String token,
             @Parameter(description = "Información para actualizar datos del Veterinario.")
             @RequestPart("vet") ReqVetDTO vetDTO,
             @Parameter(description = "Posible Imágen a actualizar")
             @RequestPart(name = "image", value = "image", required = false) MultipartFile image,
             @Parameter(description = "Posible diploma a actualizar") MultipartFile degree) throws IOException {
 
-        Long vetID = jwtUtil.getUserID(token);
+        Long vetID = userDetailsService.getAuthenticatedUserID();
         ResVetDTO response = vetService.save(vetDTO, image, degree, vetID);
 
         return ResponseEntity.ok(response);

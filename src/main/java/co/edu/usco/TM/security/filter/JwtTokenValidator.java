@@ -42,7 +42,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
             DecodedJWT decodedJWT = jwtUtil.validateToken(jwtToken);
             
             String username = jwtUtil.extractUsername(decodedJWT);
-            String stringAuthorities = jwtUtil.getSpecificClaim(decodedJWT, "authorities").asString();
+            String stringAuthorities = jwtUtil.getSpecificClaim(decodedJWT, "roles").asString();
             
             Collection<? extends GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(stringAuthorities);
             

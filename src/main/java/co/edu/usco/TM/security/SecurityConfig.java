@@ -44,10 +44,11 @@ public class SecurityConfig {
                     // Configure Public Endpoints
                     request.requestMatchers(HttpMethod.POST,
                             "/api/owner/create",
-                            "/api/vet/create",
+                            "/api/vet/create").permitAll();
+                    request.requestMatchers(
                             "/api/auth/**").permitAll();
-                    request.requestMatchers(HttpMethod.GET,
-                            // Swagger
+                    // Swagger
+                    request.requestMatchers(
                             "/swagger-ui.html",
                             "/swagger-ui/**",
                             "/v3/api-docs",

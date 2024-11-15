@@ -14,14 +14,9 @@ public interface IOwnerService {
     
     ResOwnerDTO findById(Long id);
     
-    ResOwnerDTO save(ReqOwnerDTO ownerDTO, Long ownerID);
+    ResOwnerDTO save(ReqOwnerDTO ownerDTO, MultipartFile image, Long ownerID) throws IOException;
 
     ResOwnerDTO basicDetails(Long id);
-
-    ResOwnerDTO uploadWithImage(
-            ReqOwnerDTO ownerDTO,
-            MultipartFile file,
-            Long ownerID) throws IOException;
     
     void delete(Long id);
     

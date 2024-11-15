@@ -8,8 +8,10 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.io.IOException;
 import java.util.List;
+
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,13 +42,9 @@ public class OwnerController {
             @Valid @RequestPart("owner") ReqOwnerDTO ownerDTO,
             @Parameter(description = "Posible imágen de perfil")
             @RequestPart(name = "file", value = "file", required = false) MultipartFile file) throws IOException {
-        ResOwnerDTO response;
 
-        if (file != null && !file.isEmpty()) {
-            response = ownerService.uploadWithImage(ownerDTO, file, null);
-        } else {
-            response = ownerService.save(ownerDTO, null);
-        }
+        ResOwnerDTO response;
+        response = ownerService.save(ownerDTO, file, null);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -61,6 +59,8 @@ public class OwnerController {
     @Operation(summary = "Obtener Detalles de un Dueño", description = "Obtiene los detalles de un Dueño Logeado en base a su token.")
     private ResponseEntity<ResOwnerDTO> getOwnerDetails() {
         try {
+
+            logger.info("ENTRA A DETAILS!");
 
             // Extract Owner ID from the Decoded Token
             Long ownerID = userDetailsService.getAuthenticatedUserID();
@@ -83,24 +83,15 @@ public class OwnerController {
             "así como sus nuevos datos a actualizar. El token es para extraer su ID e insertarselo al nuevo modelo " +
             "de Dueño que se solicita actualizar")
     private ResponseEntity<ResOwnerDTO> updateOwnerDetails(
-            @Parameter(description = "Token necesario para validar la sesión del usuario, crea uno en /login")
-            @RequestHeader("Authorization") String token,
             @Parameter(description = "Información para actualizar datos del Dueño.")
             @RequestPart("owner") ReqOwnerDTO ownerDTO,
             @Parameter(description = "Posible Imágen a actualizar")
-            @RequestPart(name = "file", value = "file", required = false) MultipartFile file) throws IOException {
+            @RequestPart(name = "file", value = "file", required = false) MultipartFile image) throws IOException {
 
         Long ownerID = userDetailsService.getAuthenticatedUserID();
+        ResOwnerDTO response = ownerService.save(ownerDTO, image, ownerID);
 
-        logger.info("URL IMAGEN: ", ownerDTO.getImgURL());
-
-        ResOwnerDTO response;
-
-        if (file != null && !file.isEmpty()) {
-            response = ownerService.uploadWithImage(ownerDTO, file, ownerID);
-        } else {
-            response = ownerService.save(ownerDTO, ownerID);
-        }
+        logger.info(image.getOriginalFilename());
 
         return ResponseEntity.ok(response);
     }

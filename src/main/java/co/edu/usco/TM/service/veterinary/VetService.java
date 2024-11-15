@@ -45,7 +45,7 @@ public class VetService implements IVetService {
     }
 
     @Override
-    public ResVetDTO findById(Long id) {
+    public ResVetDTO basicDetails(Long id) {
 
         ResVetDTO vetDetails = modelMapper.map(vetRepo.findById(id).get(), ResVetDTO.class);
 
@@ -60,12 +60,22 @@ public class VetService implements IVetService {
         vet.getRoles().add(roleRepo.findByName("VET"));
         vet.setPassword(passwordEncoder.encode(vet.getPassword()));
 
-        if (image != null && !image.isEmpty()) {
-            vet.setImgURL(s3Service.uploadFile(image));
-        }
+        boolean haveImgToUpload = (image != null && !image.isEmpty());
+        boolean haveImg = (vet.getImgURL() != null);
 
-        if (degree != null && !degree.isEmpty()) {
+        boolean haveDegreeToUpload = (degree != null && !degree.isEmpty());
+        boolean haveDegree = (vet.getDegreeURL() != null);
+
+        if (!haveDegree && haveDegreeToUpload) { // Crear Imágen
             vet.setDegreeURL(s3Service.uploadFile(degree));
+
+        } else if (haveDegree && haveDegreeToUpload) { // Actualizar Imágen
+            s3Service.deleteFile(vet.getDegreeURL());
+            vet.setDegreeURL(s3Service.uploadFile(degree));
+
+        } else if (haveDegree && !haveDegreeToUpload) { // Eliminar Imágen
+            s3Service.deleteFile(vet.getDegreeURL());
+            vet.setDegreeURL(null);
         }
 
         vetRepo.save(vet);

@@ -10,11 +10,14 @@ import co.edu.usco.TM.persistence.repository.PetRepository;
 import co.edu.usco.TM.persistence.repository.RoleRepository;
 import co.edu.usco.TM.s3.S3Service;
 import co.edu.usco.TM.service.noImpl.IOwnerService;
+
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,10 +25,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class OwnerService implements IOwnerService {
-    
+
+    private static final Logger logger = LoggerFactory.getLogger(OwnerService.class);
+
     @Autowired
     private OwnerRepository ownerRepo;
-    
+
     @Autowired
     private RoleRepository roleRepo;
 
@@ -34,10 +39,10 @@ public class OwnerService implements IOwnerService {
 
     @Autowired
     private ModelMapper modelMapper;
-    
+
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
     @Autowired
     S3Service s3Service;
 
@@ -50,39 +55,38 @@ public class OwnerService implements IOwnerService {
 
     @Override
     public ResOwnerDTO findById(Long id) {
-        
+
         ResOwnerDTO ownerDetails = modelMapper.map(ownerRepo.findById(id).get(), ResOwnerDTO.class);
-        
+
         return ownerDetails;
     }
 
     @Override
-    public ResOwnerDTO save(ReqOwnerDTO ownerDTO, Long ownerID) {
-        
+    public ResOwnerDTO save(ReqOwnerDTO ownerDTO, MultipartFile image, Long ownerID) throws IOException {
+
         Owner owner = modelMapper.map(ownerDTO, Owner.class);
         owner.setId(ownerID);
         owner.getRoles().add(roleRepo.findByName("OWNER"));
         owner.setPassword(passwordEncoder.encode(owner.getPassword()));
-        
+
+        boolean haveImgToUpload = (image != null && !image.isEmpty());
+        boolean haveImg = (owner.getImgURL() != null);
+        logger.info(owner.getImgURL());
+
+        if (!haveImg && haveImgToUpload) { // Crear Imágen
+            owner.setImgURL(s3Service.uploadFile(image));
+
+        } else if (haveImg && haveImgToUpload) { // Actualizar Imágen
+            s3Service.deleteFile(owner.getImgURL());
+            owner.setImgURL(s3Service.uploadFile(image));
+
+        } else if (haveImg && !haveImgToUpload) { // Eliminar Imágen
+            s3Service.deleteFile(owner.getImgURL());
+            owner.setImgURL(null);
+        }
+
         ownerRepo.save(owner);
-        
-        return modelMapper.map(owner, ResOwnerDTO.class);
-    }
-    
-    @Override
-    public ResOwnerDTO uploadWithImage(
-            ReqOwnerDTO ownerDTO,
-            MultipartFile file,
-            Long ownerID) throws IOException {
-        
-        Owner owner = modelMapper.map(ownerDTO, Owner.class);
-        owner.getRoles().add(roleRepo.findByName("OWNER"));
-        owner.setId(ownerID);
-        owner.setImgURL(s3Service.uploadFile(file));
-        owner.setPassword(passwordEncoder.encode(owner.getPassword()));
-        
-        ownerRepo.save(owner);
-        
+
         return modelMapper.map(owner, ResOwnerDTO.class);
     }
 

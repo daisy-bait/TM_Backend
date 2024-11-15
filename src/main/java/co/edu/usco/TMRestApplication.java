@@ -1,12 +1,9 @@
 package co.edu.usco;
 
-import co.edu.usco.TM.persistence.entity.administration.Role;
-import co.edu.usco.TM.persistence.repository.RoleRepository;
-import java.util.List;
-import org.springframework.boot.CommandLineRunner;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class TMRestApplication {

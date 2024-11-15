@@ -12,7 +12,7 @@ public interface IVetService {
 
     List<ResVetDTO> findAll();
     
-    ResVetDTO findById(Long id);
+    ResVetDTO basicDetails(Long id);
     
     ResVetDTO save(ReqVetDTO vetDTO, MultipartFile image, MultipartFile degree, Long vetID) throws IOException;
     
