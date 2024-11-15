@@ -1,4 +1,4 @@
-package co.edu.usco.TM.controller.administration;
+package co.edu.usco.TM.controller.common;
 
 import co.edu.usco.TM.dto.response.administration.ResUserDTO;
 import co.edu.usco.TM.service.common.UserService;
