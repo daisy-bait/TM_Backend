@@ -45,6 +45,10 @@ public class SecurityConfig {
                     request.requestMatchers(HttpMethod.POST,
                             "/api/owner/create",
                             "/api/vet/create").permitAll();
+                    request.requestMatchers(HttpMethod.GET,
+                            "/api/user/find",
+                            "/api/user/owner/find",
+                            "/api/user/vet/find").permitAll();
                     request.requestMatchers(
                             "/api/auth/**").permitAll();
                     // Swagger
