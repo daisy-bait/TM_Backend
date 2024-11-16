@@ -3,6 +3,7 @@ package co.edu.usco.TM.controller.common;
 
 import co.edu.usco.TM.dto.auth.AuthLoginRequest;
 import co.edu.usco.TM.dto.auth.AuthResponse;
+import co.edu.usco.TM.exceptions.MessageResponse;
 import co.edu.usco.TM.service.auth.UserDetailsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,8 +21,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/auth")
 @Tag(name = "Authentication", description = "Endpoints para generar una sesión con un usuario existente, otorgándole un token")
-public class AuthenticationController { 
-    
+public class AuthenticationController {
+
     @Autowired
     UserDetailsService userDetailsService;
 
@@ -51,9 +52,8 @@ public class AuthenticationController {
                             description = "Usuario sin autenticación o no existe",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = AuthResponse.class
+                                    schema = @Schema(implementation = MessageResponse.class)
                             )
-                    )
                     )
             }
     )
@@ -66,5 +66,5 @@ public class AuthenticationController {
     public ResponseEntity<List<String>> getRoles() {
         return ResponseEntity.ok(userDetailsService.getAuthenticatedUserRoles());
     }
-    
+
 }

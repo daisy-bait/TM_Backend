@@ -101,7 +101,7 @@ public class UserDetailsService implements org.springframework.security.core.use
             return user.getId();
         }
 
-        throw new IllegalArgumentException("Usuario no autenticado o no existe");
+        throw new IllegalArgumentException();
 
     }
 
