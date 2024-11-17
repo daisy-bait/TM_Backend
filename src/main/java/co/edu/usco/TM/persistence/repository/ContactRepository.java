@@ -12,35 +12,31 @@ import org.springframework.stereotype.Repository;
 public interface ContactRepository extends JpaRepository<Contact, Long> {
 
     @Query(value = "SELECT c FROM Contact c " +
-            "JOIN c.vet v " +
-            "WHERE (c.owner.id = :ownerID) " +
+            "LEFT JOIN c.owner o " +
+            "LEFT JOIN c.vet v " +
+            "WHERE (:ownerID IS NULL OR c.owner.id = :ownerID) " +
+            "AND (:vetID IS NULL OR c.vet.id = :vetID) " +
             "AND (:status IS NULL OR c.status = :status) " +
+            "AND ((:ownerID IS NOT NULL " +
             "AND (:name IS NULL OR v.name ILIKE %:name%) " +
             "AND (:username IS NULL OR v.username ILIKE %:username%) " +
-            "AND (:veterinary IS NULL OR v.veterinary ILIKE %:veterinary%) " +
-            "AND (:specialty IS NULL OR v.specialty ILIKE %:specialty%)",
-            nativeQuery = false)
-    Page<Contact> findOwnerContacs(
-            @Param("ownerID") Long ownerID,
-            @Param("status") String status,
-            @Param("name") String name,
-            @Param("username") String username,
-            @Param("veterinary") String veterinary,
-            @Param("specialty") String specialty,
-            Pageable pageable);
-
-    @Query(value = "SELECT c FROM Contact c " +
-            "JOIN c.owner o " +
-            "WHERE (c.vet.id = :vetID) " +
-            "AND (:status IS NULL OR c.status = :status) " +
+            "AND (:email IS NULL OR v.email ILIKE %:email%) " +
+            "AND (:specialty IS NULL OR v.specialty ILIKE %:specialty%)" +
+            "AND (:veterinary IS NULL OR v.veterinary ILIKE %:veterinary%))" +
+            "OR (:vetID IS NOT NULL " +
             "AND (:name IS NULL OR o.name ILIKE %:name%) " +
-            "AND (:username IS NULL OR o.username ILIKE %:username%)",
+            "AND (:username IS NULL OR o.name ILIKE %:username%) " +
+            "AND (:email IS NULL OR o.email ILIKE %:email%)))",
             nativeQuery = false)
-    Page<Contact> findVetContacts(
+    Page<Contact> findUserContacts(
+            @Param("ownerID") Long ownerID,
             @Param("vetID") Long vetID,
             @Param("status") String status,
             @Param("name") String name,
             @Param("username") String username,
+            @Param("email") String email,
+            @Param("specialty") String specialty,
+            @Param("veterinary") String veterinary,
             Pageable pageable
     );
 

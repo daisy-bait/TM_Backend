@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface PetRepository extends JpaRepository<Pet, Long> {
 
-    List<Pet> findByOwnerIdOrderByIdDesc(Long ownerId);
+    List<Pet> findByUserIdOrderByIdDesc(Long ownerId);
 
 }

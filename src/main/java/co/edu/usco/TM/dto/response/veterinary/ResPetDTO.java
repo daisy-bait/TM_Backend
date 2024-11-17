@@ -1,7 +1,8 @@
 
 package co.edu.usco.TM.dto.response.veterinary;
 
-import co.edu.usco.TM.dto.base.PetSpecie;
+import co.edu.usco.TM.dto.response.user.ResUserDTO;
+import co.edu.usco.TM.dto.shared.PetSpecie;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
@@ -20,7 +21,7 @@ public class ResPetDTO {
 
     private LocalDate birthDate;
 
-    @JsonIgnoreProperties({"petList", "appointmentList"})
-    private ResOwnerDTO owner;
+    @JsonIgnoreProperties({"pets", "userAppointments"})
+    private ResUserDTO owner;
 
 }

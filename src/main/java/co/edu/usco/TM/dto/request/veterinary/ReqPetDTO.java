@@ -1,8 +1,6 @@
 
 package co.edu.usco.TM.dto.request.veterinary;
 
-import co.edu.usco.TM.dto.response.veterinary.ResOwnerDTO;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -28,5 +26,6 @@ public class ReqPetDTO {
     private Double weight;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
+    private String imgURL;
 
 }

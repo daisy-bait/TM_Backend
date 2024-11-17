@@ -1,8 +1,8 @@
 
 package co.edu.usco.TM.dto.request.veterinary;
 
-import co.edu.usco.TM.dto.base.PetSpecie;
-import co.edu.usco.TM.dto.request.administration.ReqUserDTO;
+import co.edu.usco.TM.dto.shared.PetSpecie;
+import co.edu.usco.TM.dto.request.user.ReqUserDTO;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

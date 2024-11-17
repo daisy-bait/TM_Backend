@@ -1,14 +1,14 @@
 package co.edu.usco.TM.service.veterinary;
 
-import co.edu.usco.TM.dto.response.veterinary.ResOwnerDTO;
+import co.edu.usco.TM.dto.response.user.ResUserDTO;
 import co.edu.usco.TM.dto.response.veterinary.ResVetDTO;
+import co.edu.usco.TM.persistence.entity.user.UserEntity;
 import co.edu.usco.TM.persistence.entity.veterinary.Contact;
-import co.edu.usco.TM.persistence.entity.veterinary.Owner;
 import co.edu.usco.TM.persistence.entity.veterinary.Veterinarian;
 import co.edu.usco.TM.persistence.repository.ContactRepository;
-import co.edu.usco.TM.persistence.repository.OwnerRepository;
+import co.edu.usco.TM.persistence.repository.UserRepository;
 import co.edu.usco.TM.persistence.repository.VeterinarianRepository;
-import co.edu.usco.TM.service.noImpl.IContactService;
+import co.edu.usco.TM.service.toImpl.IContactService;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  * Esta clase depende de los siguientes componentes:
  * <ul>
  *     <li>{@link ContactRepository}: Para realizar operaciones de acceso a la base de datos sobre la entidad Contact.</li>
- *     <li>{@link OwnerRepository} y {@link VeterinarianRepository}: Para validar y recuperar entidades relacionadas.</li>
+ *     <li>{@link UserRepository} y {@link VeterinarianRepository}: Para validar y recuperar entidades relacionadas.</li>
  *     <li>{@link ModelMapper}: Para mapear entidades a DTOs y viceversa, facilitando la transferencia de datos entre capas.</li>
  * </ul>
  *
@@ -61,7 +61,7 @@ import java.util.stream.Collectors;
  *
  * @see IContactService
  * @see ContactRepository
- * @see OwnerRepository
+ * @see UserRepository
  * @see VeterinarianRepository
  */
 @Service
@@ -71,7 +71,7 @@ public class ContactService implements IContactService {
     ContactRepository contactRepo;
 
     @Autowired
-    OwnerRepository ownerRepo;
+    UserRepository userRepo;
 
     @Autowired
     VeterinarianRepository vetRepo;
@@ -98,7 +98,7 @@ public class ContactService implements IContactService {
 
         Contact contact = new Contact();
 
-        Owner owner = ownerRepo.findById(ownerID)
+        UserEntity owner = userRepo.findOwnerById(ownerID)
                 .orElseThrow(() -> new EntityNotFoundException());
         Veterinarian vet = vetRepo.findById(vetID)
                 .orElseThrow(() -> new EntityNotFoundException());
@@ -134,16 +134,18 @@ public class ContactService implements IContactService {
      * @param pageable   Objeto de paginación que define el tamaño y la página actual del resultado.
      * @return Una instancia de {@link Page} que contiene los veterinarios relacionados con el dueño en forma de {@code ResVetDTO}.
      */
+    @Override
     public Page<ResVetDTO> getOwnerContacts(
             Long ownerID,
             String status,
             String name,
             String username,
+            String email,
             String veterinary,
             String specialty,
             Pageable pageable) {
 
-        Page<Contact> ownerContacts = contactRepo.findOwnerContacs(ownerID, status, name, username, veterinary, specialty, pageable);
+        Page<Contact> ownerContacts = contactRepo.findUserContacts(ownerID, null, status, name, username, email, specialty, veterinary, pageable);
 
         List<ResVetDTO> referencedVets = ownerContacts
                 .stream()
@@ -163,18 +165,19 @@ public class ContactService implements IContactService {
      * @return
      */
     @Override
-    public Page<ResOwnerDTO> getVetContacts(
+    public Page<ResUserDTO> getVetContacts(
             Long vetID,
             String status,
             String name,
             String username,
+            String email,
             Pageable pageable) {
 
-        Page<Contact> vetContacts = contactRepo.findVetContacts(vetID, status, name, username, pageable);
+        Page<Contact> vetContacts = contactRepo.findUserContacts(null, vetID, status, name, username, email,null, null, pageable);
 
-        List<ResOwnerDTO> referencedOwners = vetContacts
+        List<ResUserDTO> referencedOwners = vetContacts
                 .stream()
-                .map(contact -> modelMapper.map(contact.getOwner(), ResOwnerDTO.class))
+                .map(contact -> modelMapper.map(contact.getOwner(), ResUserDTO.class))
                 .collect(Collectors.toList());
 
         return new PageImpl<>(referencedOwners, pageable, vetContacts.getTotalElements());
@@ -191,12 +194,12 @@ public class ContactService implements IContactService {
     }
 
     @Override
-    public String deleteContact(Long contactID) throws EntityNotFoundException {
+    public Contact deleteContact(Long contactID) throws EntityNotFoundException {
 
         Contact contactToDelete = contactRepo.findById(contactID).orElseThrow(() -> new EntityNotFoundException());
         contactRepo.deleteById(contactID);
 
-        return "Deleted Contact \n" + contactToDelete.toString();
+        return contactToDelete;
     }
 
 }

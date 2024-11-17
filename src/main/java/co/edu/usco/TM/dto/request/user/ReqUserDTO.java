@@ -1,5 +1,5 @@
 
-package co.edu.usco.TM.dto.request.administration;
+package co.edu.usco.TM.dto.request.user;
 
 import lombok.*;
 
@@ -11,6 +11,9 @@ public class ReqUserDTO {
     private String username;
     private String name;
     private String email;
-    private String imgURL;
     private String password;
+    private String address;
+    private String zipCode;
+    private String phone;
+    private String imgURL;
 }

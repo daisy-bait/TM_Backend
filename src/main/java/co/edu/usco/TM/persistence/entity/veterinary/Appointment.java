@@ -1,8 +1,11 @@
 
 package co.edu.usco.TM.persistence.entity.veterinary;
+import co.edu.usco.TM.persistence.entity.user.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -16,15 +19,21 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "app_id")
     private Long id;
-    
+
+    @NotNull
     @Column(name = "app_reason")
     private String reason;
     
     @Column(name = "app_description")
     private String description;
-    
+
+    @NotNull
     @Column(name = "app_datetime")
     private LocalDateTime datetime;
+
+    @NotNull
+    @Column(name = "app_duration")
+    private Integer duration;
     
     @Column(name ="app_status")
     private String status;
@@ -32,7 +41,7 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "own_id", nullable = false)
     @JsonIgnore
-    private Owner owner;
+    private UserEntity owner;
     
     @ManyToOne
     @JoinColumn(name = "vet_id", nullable = false)

@@ -1,5 +1,5 @@
 
-package co.edu.usco.TM.persistence.entity.administration;
+package co.edu.usco.TM.persistence.entity.user;
 
 import jakarta.persistence.*;
 import lombok.*;

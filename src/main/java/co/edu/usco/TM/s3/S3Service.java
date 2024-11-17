@@ -1,6 +1,6 @@
 package co.edu.usco.TM.s3;
 
-import co.edu.usco.TM.service.noImpl.IS3Service;
+import co.edu.usco.TM.service.toImpl.IS3Service;
 import java.io.IOException;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;

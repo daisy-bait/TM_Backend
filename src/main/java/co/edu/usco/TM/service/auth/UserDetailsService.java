@@ -2,7 +2,7 @@ package co.edu.usco.TM.service.auth;
 
 import co.edu.usco.TM.dto.auth.AuthLoginRequest;
 import co.edu.usco.TM.dto.auth.AuthResponse;
-import co.edu.usco.TM.persistence.entity.administration.UserEntity;
+import co.edu.usco.TM.persistence.entity.user.UserEntity;
 import co.edu.usco.TM.persistence.repository.UserRepository;
 import co.edu.usco.TM.security.jwt.JwtUtil;
 import java.util.List;

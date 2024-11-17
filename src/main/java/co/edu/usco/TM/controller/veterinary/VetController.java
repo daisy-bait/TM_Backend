@@ -1,16 +1,20 @@
 package co.edu.usco.TM.controller.veterinary;
 
 import co.edu.usco.TM.dto.request.veterinary.ReqVetDTO;
+import co.edu.usco.TM.dto.response.user.ResUserDTO;
 import co.edu.usco.TM.dto.response.veterinary.ResVetDTO;
-import co.edu.usco.TM.security.jwt.JwtUtil;
 import co.edu.usco.TM.service.auth.UserDetailsService;
-import co.edu.usco.TM.service.noImpl.IVetService;
+import co.edu.usco.TM.service.toImpl.IUserService;
+import co.edu.usco.TM.service.toImpl.IVetService;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Locale;
 
 @RestController
 @RequestMapping("/api/vet")
@@ -27,6 +30,9 @@ public class VetController {
 
     @Autowired
     private IVetService vetService;
+
+    @Autowired
+    private IUserService userService;
 
     @Autowired
     UserDetailsService userDetailsService;
@@ -47,22 +53,33 @@ public class VetController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @GetMapping("/find")
+    private ResponseEntity<Page<ResUserDTO>> findFilteredVets(
+            @RequestParam("name") String name,
+            @RequestParam("username") String username,
+            @RequestParam("email") String email,
+            @RequestParam("specialty") String specialty,
+            @RequestParam("veterinary") String veteriynary,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(userService.findAllUsers(name, username, email, "VET", pageable, specialty, veteriynary));
+    }
+
+    @GetMapping("/find/{id}")
+    private ResponseEntity<ResVetDTO> findById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(vetService.findById(id));
+    }
+
     @GetMapping(value = "/details")
     @Operation(summary = "Obtener Detalles de un Veterinario", description = "Obtiene los detalles de un Veterinario Logeado en base a su token.")
     private ResponseEntity<ResVetDTO> getVetDetails() {
-        try {
 
-            Long vetID = userDetailsService.getAuthenticatedUserID();
-            ResVetDTO vetDetails = vetService.basicDetails(vetID);
+        Long vetID = userDetailsService.getAuthenticatedUserID();
+        ResVetDTO vetDetails = vetService.findById(vetID);
 
-            if (vetDetails == null) {
-                return ResponseEntity.ok(vetDetails);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(vetDetails);
-            }
-        } catch(JWTVerificationException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
+        return ResponseEntity.ok(vetDetails);
     }
 
     @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -80,6 +97,11 @@ public class VetController {
         ResVetDTO response = vetService.save(vetDTO, image, degree, vetID);
 
         return ResponseEntity.ok(response);
+    }
 
+    @DeleteMapping("/disable")
+    private ResponseEntity<ResVetDTO> disableVet() {
+        Long vetID = userDetailsService.getAuthenticatedUserID();
+        return ResponseEntity.ok(vetService.disableVet(vetID));
     }
 }

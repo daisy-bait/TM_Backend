@@ -1,13 +1,20 @@
-package co.edu.usco.TM.persistence.entity.administration;
+package co.edu.usco.TM.persistence.entity.user;
 
+import co.edu.usco.TM.persistence.entity.shared.ImageEntity;
+import co.edu.usco.TM.persistence.entity.veterinary.Appointment;
+import co.edu.usco.TM.persistence.entity.veterinary.Contact;
+import co.edu.usco.TM.persistence.entity.veterinary.Pet;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -17,7 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class UserEntity implements UserDetails {
+public class UserEntity implements UserDetails, ImageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +47,15 @@ public class UserEntity implements UserDetails {
     @Column(name = "usr_password")
     private String password;
 
+    @Column(name = "usr_address")
+    private String address;
+
+    @Column(name = "usr_zip_code")
+    private String zipCode;
+
+    @Column(name = "usr_phone")
+    private String phone;
+
     @Column(name = "usr_img")
     private String imgURL;
 
@@ -49,6 +65,16 @@ public class UserEntity implements UserDetails {
             joinColumns = @JoinColumn(name = "usr_id"),
             inverseJoinColumns = @JoinColumn(name = "rol_id"))
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Contact> contacts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Pet> pets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Appointment> userAppointments = new ArrayList<>();
 
     @Column(name = "usr_enabled")
     private boolean enabled;

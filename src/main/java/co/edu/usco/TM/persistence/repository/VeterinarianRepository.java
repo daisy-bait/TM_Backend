@@ -15,14 +15,16 @@ public interface VeterinarianRepository extends JpaRepository<Veterinarian, Long
     @Query(value = "SELECT v FROM Veterinarian v " +
             "WHERE (:name IS NULL OR v.name ILIKE %:name%) " +
             "AND (:username IS NULL OR v.username ILIKE %:username%) " +
+            "AND (:email IS NULL OR v.email ILIKE %:email%) " +
             "AND (:veterinary IS NULL OR v.veterinary ILIKE %:veterinary%) " +
             "AND (:specialty IS NULL OR v.specialty ILIKE %:specialty%)",
             nativeQuery = false)
-    public Page<Veterinarian> findAllVeterinarian(
+    public Page<Veterinarian> findAllVeterinarians(
             @Param("name") String name,
             @Param("username") String username,
             @Param("veterinary") String veterinary,
             @Param("specialty") String specialty,
+            @Param("email") String email,
             Pageable pageable);
 
 }

@@ -1,6 +1,6 @@
-package co.edu.usco.TM.service.noImpl;
+package co.edu.usco.TM.service.toImpl;
 
-import co.edu.usco.TM.dto.response.veterinary.ResOwnerDTO;
+import co.edu.usco.TM.dto.response.user.ResUserDTO;
 import co.edu.usco.TM.dto.response.veterinary.ResVetDTO;
 import co.edu.usco.TM.persistence.entity.veterinary.Contact;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,19 +16,21 @@ public interface IContactService {
             String status,
             String name,
             String username,
+            String email,
             String veterinary,
             String specialty,
             Pageable pageable);
 
-    public Page<ResOwnerDTO> getVetContacts(
+    public Page<ResUserDTO> getVetContacts(
             Long vetID,
             String status,
             String name,
             String username,
+            String email,
             Pageable pageable);
 
     public Contact updateContactStatus(Long contactID, String newStatus) throws EntityNotFoundException;
 
-    public String deleteContact(Long contactID) throws EntityNotFoundException;
+    public Contact deleteContact(Long contactID) throws EntityNotFoundException;
 
 }

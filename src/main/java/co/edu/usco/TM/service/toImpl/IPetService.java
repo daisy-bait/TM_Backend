@@ -1,5 +1,5 @@
 
-package co.edu.usco.TM.service.noImpl;
+package co.edu.usco.TM.service.toImpl;
 
 import co.edu.usco.TM.dto.request.veterinary.ReqPetDTO;
 import co.edu.usco.TM.dto.response.veterinary.ResPetDTO;
@@ -9,6 +9,10 @@ import java.io.IOException;
 
 public interface IPetService {
 
-    ResPetDTO save(ReqPetDTO petDTO, Long ownerID, MultipartFile image) throws IOException;
+    ResPetDTO save(ReqPetDTO petDTO, Long ownerID, MultipartFile image, Long petID) throws IOException;
+
+    ResPetDTO findById(Long id);
+
+    ResPetDTO disablePet(Long id);
 
 }

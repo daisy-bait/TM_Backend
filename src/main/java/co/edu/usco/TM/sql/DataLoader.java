@@ -1,6 +1,6 @@
 package co.edu.usco.TM.sql;
 
-import co.edu.usco.TM.persistence.entity.administration.Role;
+import co.edu.usco.TM.persistence.entity.user.Role;
 import co.edu.usco.TM.persistence.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

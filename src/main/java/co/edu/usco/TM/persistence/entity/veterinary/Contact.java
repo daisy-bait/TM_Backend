@@ -1,9 +1,9 @@
 
 package co.edu.usco.TM.persistence.entity.veterinary;
 
+import co.edu.usco.TM.persistence.entity.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
@@ -22,7 +22,7 @@ public class Contact {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "con_own_id", nullable = false)
-    private Owner owner;
+    private UserEntity owner;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "con_vet_id", nullable = false)

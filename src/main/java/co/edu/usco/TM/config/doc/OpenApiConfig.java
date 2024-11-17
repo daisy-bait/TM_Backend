@@ -1,5 +1,5 @@
 
-package co.edu.usco.TM.config;
+package co.edu.usco.TM.config.doc;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import java.util.ArrayList;

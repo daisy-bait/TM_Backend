@@ -1,6 +1,8 @@
 package co.edu.usco.TM.persistence.entity.veterinary;
 
-import co.edu.usco.TM.dto.base.PetSpecie;
+import co.edu.usco.TM.dto.shared.PetSpecie;
+import co.edu.usco.TM.persistence.entity.shared.ImageEntity;
+import co.edu.usco.TM.persistence.entity.user.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -14,7 +16,7 @@ import java.time.LocalDate;
 @SuperBuilder
 @Entity
 @Table(name = "pets")
-public class Pet {
+public class Pet implements ImageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,6 +46,9 @@ public class Pet {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "own_id", nullable = false)
     @JsonIgnore
-    private Owner owner;
+    private UserEntity owner;
+
+    @Column(name = "pet_enabled")
+    private boolean enabled;
 
 }

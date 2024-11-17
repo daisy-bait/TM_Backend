@@ -1,4 +1,4 @@
-package co.edu.usco.TM.dto.base;
+package co.edu.usco.TM.dto.shared;
 
 public enum PetSpecie {
 

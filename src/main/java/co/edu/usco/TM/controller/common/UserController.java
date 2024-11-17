@@ -1,7 +1,7 @@
 package co.edu.usco.TM.controller.common;
 
-import co.edu.usco.TM.dto.response.administration.ResUserDTO;
-import co.edu.usco.TM.service.common.UserService;
+import co.edu.usco.TM.dto.response.user.ResUserDTO;
+import co.edu.usco.TM.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,9 +25,9 @@ public class UserController {
             @RequestParam(required = false) String username,
             @RequestParam(required = false) String email,
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "7") Integer size) {
+            @RequestParam(defaultValue = "10") Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(userService.findAllUsers(name, username, email, pageable));
+        return ResponseEntity.ok(userService.findAllUsers(name, username, email, null, pageable, null, null ));
     }
 
 }
