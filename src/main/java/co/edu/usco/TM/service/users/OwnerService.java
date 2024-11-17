@@ -47,11 +47,13 @@ public class OwnerService implements IOwnerService {
         UserEntity owner = ownerID != null ? userRepo.findOwnerById(ownerID)
                 .orElseThrow(() -> new EntityNotFoundException()) : new UserEntity();
 
+        owner = modelMapper.map(ownerDTO, UserEntity.class);
+
         if (owner.getId() == null) {
             owner.getRoles().add(roleRepo.findByName("OWNER"));
         }
 
-        owner = modelMapper.map(ownerDTO, UserEntity.class);
+        owner.setId(ownerID);
         owner.setPassword(passwordEncoder.encode(owner.getPassword()));
         uploader.uploadImage(owner, image);
         userRepo.save(owner);
@@ -86,7 +88,7 @@ public class OwnerService implements IOwnerService {
 
     public List<ResPetDTO> getLastThreePets(Long ownerID) {
 
-        return petRepo.findByUserIdOrderByIdDesc(ownerID)
+        return petRepo.findByOwnerIdOrderByIdDesc(ownerID)
                 .stream()
                 .limit(3)
                 .map(pet -> modelMapper.map(pet, ResPetDTO.class))

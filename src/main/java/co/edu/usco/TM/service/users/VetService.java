@@ -41,11 +41,12 @@ public class VetService implements IVetService {
         Veterinarian vet = vetID != null ? vetRepo.findById(vetID)
                 .orElseThrow(() -> new EntityNotFoundException()) : new Veterinarian();
 
+        vet = modelMapper.map(vetDTO, Veterinarian.class);
+
         if (vet.getId() != null) {
             vet.getRoles().add(roleRepo.findByName("VET"));
         }
 
-        vet = modelMapper.map(vetDTO, Veterinarian.class);
         vet.setPassword(passwordEncoder.encode(vet.getPassword()));
         uploader.uploadImage(vet, image);
         uploader.uploadDegree(vet, degree);

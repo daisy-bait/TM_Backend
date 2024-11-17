@@ -44,7 +44,7 @@ public class OwnerController {
             @Parameter(description = "Información básica para crear un dueño")
             @Valid @RequestPart("owner") ReqUserDTO ownerDTO,
             @Parameter(description = "Posible imágen de perfil")
-            @RequestPart(name = "file", value = "file", required = false) MultipartFile file) throws IOException {
+            @RequestPart(name = "image", required = false) MultipartFile file) throws IOException {
 
         ResUserDTO response;
         response = ownerService.save(ownerDTO, file, null);
