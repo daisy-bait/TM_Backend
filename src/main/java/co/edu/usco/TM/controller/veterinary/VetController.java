@@ -91,7 +91,8 @@ public class VetController {
             @RequestPart("vet") ReqVetDTO vetDTO,
             @Parameter(description = "Posible Imágen a actualizar")
             @RequestPart(name = "image", value = "image", required = false) MultipartFile image,
-            @Parameter(description = "Posible diploma a actualizar") MultipartFile degree) throws IOException {
+            @Parameter(description = "Posible diploma a actualizar")
+            @RequestPart(name = "degree", value = "degree") MultipartFile degree) throws IOException {
 
         Long vetID = userDetailsService.getAuthenticatedUserID();
         ResVetDTO response = vetService.save(vetDTO, image, degree, vetID);
