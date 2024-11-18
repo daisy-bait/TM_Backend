@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ContactRepository extends JpaRepository<Contact, Long> {
 
@@ -16,7 +18,7 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
             "LEFT JOIN c.vet v " +
             "WHERE (:ownerID IS NULL OR c.owner.id = :ownerID) " +
             "AND (:vetID IS NULL OR c.vet.id = :vetID) " +
-            "AND (:status IS NULL OR c.status = :status) " +
+            "AND (:status IS NULL OR c.status ILIKE %:status%) " +
             "AND ((:ownerID IS NOT NULL " +
             "AND (:name IS NULL OR v.name ILIKE %:name%) " +
             "AND (:username IS NULL OR v.username ILIKE %:username%) " +
@@ -40,4 +42,11 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
             Pageable pageable
     );
 
+    @Query(value = "SELECT c FROM Contact c " +
+            "WHERE (c.owner.id = :ownerID) AND (c.vet.id = :vetID)",
+            nativeQuery = false)
+    Optional<Contact> verifyContact(
+            @Param("ownerID") Long ownerID,
+            @Param("vetID") Long vetID
+    );
 }

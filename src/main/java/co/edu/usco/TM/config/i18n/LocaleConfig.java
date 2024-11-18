@@ -1,4 +1,4 @@
-package co.edu.usco.TM.config;
+package co.edu.usco.TM.config.i18n;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;

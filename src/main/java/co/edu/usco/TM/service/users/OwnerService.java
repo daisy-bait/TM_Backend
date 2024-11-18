@@ -9,9 +9,11 @@ import co.edu.usco.TM.persistence.repository.PetRepository;
 import co.edu.usco.TM.persistence.repository.RoleRepository;
 import co.edu.usco.TM.persistence.repository.UserRepository;
 import co.edu.usco.TM.service.toImpl.IOwnerService;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import co.edu.usco.TM.util.FileUploader;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
@@ -42,20 +44,22 @@ public class OwnerService implements IOwnerService {
     FileUploader uploader;
 
     @Override
-    public ResUserDTO save(ReqUserDTO ownerDTO, MultipartFile image, Long ownerID) throws IOException {
+    public ResUserDTO save(ReqUserDTO ownerDTO, MultipartFile image, boolean deleteImg, Long ownerID) throws IOException {
 
-        UserEntity owner = ownerID != null ? userRepo.findOwnerById(ownerID)
-                .orElseThrow(() -> new EntityNotFoundException()) : new UserEntity();
+        UserEntity owner;
 
-        owner = modelMapper.map(ownerDTO, UserEntity.class);
-
-        if (owner.getId() == null) {
+        if (ownerID == null) {
+            owner = new UserEntity();
             owner.getRoles().add(roleRepo.findByName("OWNER"));
+            owner.setEnabled(true);
+        } else {
+            owner = userRepo.findOwnerById(ownerID)
+                    .orElseThrow(() -> new EntityNotFoundException());
         }
 
-        owner.setId(ownerID);
+        modelMapper.map(ownerDTO, owner);
+        uploader.uploadImage(owner, image, deleteImg);
         owner.setPassword(passwordEncoder.encode(owner.getPassword()));
-        uploader.uploadImage(owner, image);
         userRepo.save(owner);
 
         return modelMapper.map(owner, ResUserDTO.class);

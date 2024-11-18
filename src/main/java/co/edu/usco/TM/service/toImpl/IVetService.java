@@ -10,7 +10,7 @@ public interface IVetService {
     
     ResVetDTO findById(Long id);
     
-    ResVetDTO save(ReqVetDTO vetDTO, MultipartFile image, MultipartFile degree, Long vetID) throws IOException;
+    ResVetDTO save(ReqVetDTO vetDTO, MultipartFile image, MultipartFile degree, boolean deleteImg, Long vetID) throws IOException;
     
     ResVetDTO disableVet(Long id);
     

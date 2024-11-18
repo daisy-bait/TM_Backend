@@ -37,7 +37,7 @@ public class PetController {
             @RequestPart(name = "file", value = "file", required = false) MultipartFile image) throws IOException {
 
         Long ownerID = userDetailsService.getAuthenticatedUserID();
-        ResPetDTO response = petService.save(petDTO, ownerID, image, null);
+        ResPetDTO response = petService.save(petDTO, ownerID, image, false, null);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -51,12 +51,14 @@ public class PetController {
     private ResponseEntity<ResPetDTO> update(
             @Valid @RequestPart("pet") ReqPetDTO petDTO,
             @PathVariable Long petID,
-            @RequestPart(name = "file", value = "file", required = false) MultipartFile image) throws IOException {
+            @RequestPart(name = "file", value = "file", required = false) MultipartFile image,
+            @Parameter(description = "Decide si quieres eliminar la imagen de tu usuario o no, por defecto no se hará nada")
+            @RequestParam(name = "deleteImage", required = false) boolean deleteImg) throws IOException {
 
         Long authenticatedUserID = userDetailsService.getAuthenticatedUserID();
         verifyOwnerID(authenticatedUserID, petService.findById(petID).getOwner().getId());
 
-        ResPetDTO response = petService.save(petDTO, authenticatedUserID, image, petID);
+        ResPetDTO response = petService.save(petDTO, authenticatedUserID, image, deleteImg, petID);
 
         return ResponseEntity.ok(response);
     }

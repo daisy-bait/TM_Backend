@@ -2,7 +2,7 @@ package co.edu.usco.TM.service.users;
 
 import co.edu.usco.TM.dto.request.veterinary.ReqVetDTO;
 import co.edu.usco.TM.dto.response.veterinary.ResVetDTO;
-import co.edu.usco.TM.persistence.entity.veterinary.Veterinarian;
+import co.edu.usco.TM.persistence.entity.user.Veterinarian;
 import co.edu.usco.TM.persistence.repository.RoleRepository;
 import co.edu.usco.TM.persistence.repository.VeterinarianRepository;
 import co.edu.usco.TM.service.toImpl.IVetService;
@@ -36,20 +36,23 @@ public class VetService implements IVetService {
     FileUploader uploader;
 
     @Override
-    public ResVetDTO save(ReqVetDTO vetDTO, MultipartFile image, MultipartFile degree, Long vetID) throws IOException {
+    public ResVetDTO save(ReqVetDTO vetDTO, MultipartFile image, MultipartFile degree, boolean deleteImg, Long vetID) throws IOException {
 
-        Veterinarian vet = vetID != null ? vetRepo.findById(vetID)
-                .orElseThrow(() -> new EntityNotFoundException()) : new Veterinarian();
+        Veterinarian vet;
 
-        vet = modelMapper.map(vetDTO, Veterinarian.class);
-
-        if (vet.getId() != null) {
+        if (vetID == null) {
+            vet = new Veterinarian();
             vet.getRoles().add(roleRepo.findByName("VET"));
+            vet.setEnabled(true);
+        } else {
+            vet = vetRepo.findById(vetID)
+                    .orElseThrow(() -> new EntityNotFoundException());
         }
 
-        vet.setPassword(passwordEncoder.encode(vet.getPassword()));
-        uploader.uploadImage(vet, image);
+        modelMapper.map(vetDTO, vet);
+        uploader.uploadImage(vet, image, deleteImg);
         uploader.uploadDegree(vet, degree);
+        vet.setPassword(passwordEncoder.encode(vet.getPassword()));
         vetRepo.save(vet);
 
         return modelMapper.map(vet, ResVetDTO.class);

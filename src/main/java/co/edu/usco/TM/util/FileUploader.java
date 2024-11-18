@@ -1,8 +1,7 @@
 package co.edu.usco.TM.util;
 
 import co.edu.usco.TM.persistence.entity.shared.ImageEntity;
-import co.edu.usco.TM.persistence.entity.user.UserEntity;
-import co.edu.usco.TM.persistence.entity.veterinary.Veterinarian;
+import co.edu.usco.TM.persistence.entity.user.Veterinarian;
 import co.edu.usco.TM.s3.S3Service;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ public class FileUploader {
     @Autowired
     S3Service s3Service;
 
-    public void uploadImage(ImageEntity entity, MultipartFile image) throws IOException {
+    public void uploadImage(ImageEntity entity, MultipartFile image, boolean deleteImg) throws IOException {
 
         boolean haveImgToUpload = (image != null && !image.isEmpty());
         boolean haveImg = (entity.getImgURL() != null);
@@ -30,7 +29,8 @@ public class FileUploader {
             s3Service.deleteFile(entity.getImgURL());
             entity.setImgURL(s3Service.uploadFile(image));
 
-        } else if (haveImg && !haveImgToUpload) { // Eliminar Imágen
+
+        } else if (haveImg && deleteImg && !haveImgToUpload) { // Eliminar Imágen
             s3Service.deleteFile(entity.getImgURL());
             entity.setImgURL(null);
         }
@@ -42,9 +42,6 @@ public class FileUploader {
                 s3Service.deleteFile(vet.getDegreeURL());
             }
             vet.setDegreeURL(s3Service.uploadFile(degree));
-        } else if (vet.getDegreeURL() != null) {
-            s3Service.deleteFile(vet.getDegreeURL());
-            vet.setDegreeURL(null);
         }
     }
 

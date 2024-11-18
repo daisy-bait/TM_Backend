@@ -22,6 +22,5 @@ public class ResUserDTO {
     private String imgURL;
 
     private List<ResPetDTO> pets;
-
     private List<AppointmentDTO> userAppointments;
 }

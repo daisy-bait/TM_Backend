@@ -44,7 +44,7 @@ public class Pet implements ImageEntity {
     private String imgURL;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "own_id", nullable = false)
+    @JoinColumn(name = "pet_own_id", nullable = false)
     @JsonIgnore
     private UserEntity owner;
 

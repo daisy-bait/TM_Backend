@@ -27,9 +27,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             "AND (:username IS NULL OR u.username ILIKE %:username%) " +
             "AND (:email IS NULL OR u.email ILIKE %:email%) " +
             "AND (:role IS NULL OR r.name = :role) " +
-            "AND (:role = 'VET' " +
-            "AND (:specialty IS NULL OR v.specialty = :specialty) " +
-            "AND (:veterinary IS NULL OR v.veterinary ILIKE %:veterinary%))",
+            "AND (:role != 'VET' " +
+            "OR ((:specialty IS NULL OR v.specialty = :specialty) " +
+            "AND (:veterinary IS NULL OR v.veterinary ILIKE %:veterinary%)))",
             nativeQuery = false)
     public Page<UserEntity> findFilteredUsers(
             @Param("name") String name,
@@ -38,6 +38,21 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             @Param("role") String role,
             @Param("specialty") String specialty,
             @Param("veterinary") String veterinary,
+            Pageable pageable);
+
+    @Query(value = "SELECT u FROM UserEntity u " +
+            "JOIN u.roles r " +
+            "LEFT JOIN Veterinarian v ON u.id = v.id " +
+            "WHERE (:name IS NULL OR u.name ILIKE %:name%) " +
+            "AND (:username IS NULL OR u.username ILIKE %:username%) " +
+            "AND (:email IS NULL OR u.email ILIKE %:email%) " +
+            "AND (:role IS NULL OR r.name = :role) ",
+            nativeQuery = false)
+    public Page<UserEntity> findFilteredOwners(
+            @Param("name") String name,
+            @Param("username") String username,
+            @Param("email") String email,
+            @Param("role") String role,
             Pageable pageable);
 
     @Query(value = "SELECT u FROM UserEntity u " +

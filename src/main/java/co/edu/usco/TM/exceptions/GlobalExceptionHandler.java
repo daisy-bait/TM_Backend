@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.persistence.EntityNotFoundException;
 import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -119,6 +120,20 @@ public class GlobalExceptionHandler {
                         LocalDateTime.now()
                 )
         );
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<MessageResponse> handleIllegalStateException(IllegalStateException ex, WebRequest webRequest) {
+
+        Locale locale = webRequest.getLocale();
+        Map<String, String> details = doDetails(ex, locale);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new MessageResponse(HttpStatus.NOT_FOUND.value(),
+                getMessage(ex.getMessage(), locale),
+                details,
+                LocalDateTime.now()
+        ));
     }
 
     public Map<String, String> getValidationErrors(BindingResult errors, Locale locale) {

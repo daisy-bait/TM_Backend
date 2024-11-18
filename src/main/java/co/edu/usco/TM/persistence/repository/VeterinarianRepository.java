@@ -1,7 +1,7 @@
 
 package co.edu.usco.TM.persistence.repository;
 
-import co.edu.usco.TM.persistence.entity.veterinary.Veterinarian;
+import co.edu.usco.TM.persistence.entity.user.Veterinarian;
 import feign.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public interface IPetService {
 
-    ResPetDTO save(ReqPetDTO petDTO, Long ownerID, MultipartFile image, Long petID) throws IOException;
+    ResPetDTO save(ReqPetDTO petDTO, Long ownerID, MultipartFile image, boolean deleteImg, Long petID) throws IOException;
 
     ResPetDTO findById(Long id);
 

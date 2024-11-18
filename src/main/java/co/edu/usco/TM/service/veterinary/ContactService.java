@@ -2,9 +2,10 @@ package co.edu.usco.TM.service.veterinary;
 
 import co.edu.usco.TM.dto.response.user.ResUserDTO;
 import co.edu.usco.TM.dto.response.veterinary.ResVetDTO;
+import co.edu.usco.TM.dto.shared.appointment.ContactDTO;
 import co.edu.usco.TM.persistence.entity.user.UserEntity;
 import co.edu.usco.TM.persistence.entity.veterinary.Contact;
-import co.edu.usco.TM.persistence.entity.veterinary.Veterinarian;
+import co.edu.usco.TM.persistence.entity.user.Veterinarian;
 import co.edu.usco.TM.persistence.repository.ContactRepository;
 import co.edu.usco.TM.persistence.repository.UserRepository;
 import co.edu.usco.TM.persistence.repository.VeterinarianRepository;
@@ -17,7 +18,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -94,7 +97,7 @@ public class ContactService implements IContactService {
      * @throws EntityNotFoundException Si el usuario con el que se quiere crear una relación no existe como entidad
      */
     @Override
-    public Contact createContact(Long ownerID, Long vetID) throws EntityNotFoundException {
+    public ContactDTO createContact(Long originID, Long ownerID, Long vetID) throws EntityNotFoundException {
 
         Contact contact = new Contact();
 
@@ -103,10 +106,27 @@ public class ContactService implements IContactService {
         Veterinarian vet = vetRepo.findById(vetID)
                 .orElseThrow(() -> new EntityNotFoundException());
 
-        contact.builder().owner(owner).vet(vet).status("PENDING").build();
+        if(ownerID.equals(vetID)) throw new IllegalStateException("contact.sameID.exception");
+
+        Optional<Contact> optContact = contactRepo.verifyContact(ownerID, vetID);
+
+        if (optContact.isPresent()) {
+            contact = optContact.get();
+            if (contact.getStatus().equals("ACCEPTED")) {
+                throw new IllegalStateException("contact.exist.exception");
+            } else if (contact.getOrigin().equals(originID)) {
+                throw new IllegalStateException("contact.sent.exception");
+            } else {
+                contact.setStatus("ACCEPTED");
+            }
+        } else {
+            contact = Contact.builder().origin(originID).owner(owner).vet(vet)
+                    .status("PENDING").created_at(LocalDateTime.now()).build();
+        }
+
         contactRepo.save(contact);
 
-        return contact;
+        return modelMapper.map(contact, ContactDTO.class);
     }
 
     /**
@@ -173,7 +193,7 @@ public class ContactService implements IContactService {
             String email,
             Pageable pageable) {
 
-        Page<Contact> vetContacts = contactRepo.findUserContacts(null, vetID, status, name, username, email,null, null, pageable);
+        Page<Contact> vetContacts = contactRepo.findUserContacts(null, vetID, status, name, username, email, null, null, pageable);
 
         List<ResUserDTO> referencedOwners = vetContacts
                 .stream()
@@ -184,22 +204,14 @@ public class ContactService implements IContactService {
     }
 
     @Override
-    public Contact updateContactStatus(Long contactId, String newStatus) throws EntityNotFoundException {
+    public ContactDTO deleteContact(Long ownerID, Long vetID) throws EntityNotFoundException {
 
-        Contact contact = contactRepo.findById(contactId)
-                .orElseThrow(() -> new EntityNotFoundException());
+        if (ownerID.equals(vetID)) throw new IllegalStateException("contact.sameID.exception");
 
-        contact.setStatus(newStatus);
-        return contactRepo.save(contact);
-    }
+        Contact contactToDelete = contactRepo.verifyContact(ownerID, vetID).orElseThrow(() -> new EntityNotFoundException());
+        contactRepo.deleteById(contactToDelete.getId());
 
-    @Override
-    public Contact deleteContact(Long contactID) throws EntityNotFoundException {
-
-        Contact contactToDelete = contactRepo.findById(contactID).orElseThrow(() -> new EntityNotFoundException());
-        contactRepo.deleteById(contactID);
-
-        return contactToDelete;
+        return modelMapper.map(contactToDelete, ContactDTO.class);
     }
 
 }

@@ -26,7 +26,7 @@ public class UserService implements IUserService {
     @Override
     public Page<ResUserDTO> findAllUsers(String name, String username, String email, String role, Pageable pageable, String specialty, String veterinary) {
 
-        Page<UserEntity> usersPage = userRepo.findFilteredUsers(name, username, email, role, specialty, veterinary, pageable);
+        Page<UserEntity> usersPage = userRepo.findFilteredOwners(name, username, email, role, pageable);
 
         return new PageImpl<>(
                 usersPage.stream().map(user -> mapUserToDTO(user, role)).collect(Collectors.toList()),
@@ -36,9 +36,11 @@ public class UserService implements IUserService {
     }
 
     public ResUserDTO mapUserToDTO(UserEntity userEntity, String role) {
-        return switch (role) {
-            case "VET" -> modelMapper.map(userEntity, ResVetDTO.class);
-            default -> modelMapper.map(userEntity, ResUserDTO.class);
-        };
+
+        if (role == "VET") {
+            return modelMapper.map(userEntity, ResVetDTO.class);
+        } else {
+            return modelMapper.map(userEntity, ResUserDTO.class);
+        }
     }
 }

@@ -3,7 +3,10 @@ package co.edu.usco.TM.controller.veterinary;
 import co.edu.usco.TM.dto.request.veterinary.ReqVetDTO;
 import co.edu.usco.TM.dto.response.user.ResUserDTO;
 import co.edu.usco.TM.dto.response.veterinary.ResVetDTO;
+import co.edu.usco.TM.dto.shared.appointment.ContactDTO;
+import co.edu.usco.TM.persistence.entity.veterinary.Contact;
 import co.edu.usco.TM.service.auth.UserDetailsService;
+import co.edu.usco.TM.service.toImpl.IContactService;
 import co.edu.usco.TM.service.toImpl.IUserService;
 import co.edu.usco.TM.service.toImpl.IVetService;
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -35,6 +38,9 @@ public class VetController {
     private IUserService userService;
 
     @Autowired
+    private IContactService contactService;
+
+    @Autowired
     UserDetailsService userDetailsService;
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -48,18 +54,18 @@ public class VetController {
             @RequestPart(name = "degree", value = "degree", required = false) MultipartFile degree) throws IOException {
 
         ResVetDTO response;
-        response = vetService.save(vetDTO, image, degree, null);
+        response = vetService.save(vetDTO, image, degree, false, null);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/find")
     private ResponseEntity<Page<ResUserDTO>> findFilteredVets(
-            @RequestParam("name") String name,
-            @RequestParam("username") String username,
-            @RequestParam("email") String email,
-            @RequestParam("specialty") String specialty,
-            @RequestParam("veterinary") String veteriynary,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String specialty,
+            @RequestParam(required = false) String veteriynary,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size
     ) {
@@ -92,10 +98,12 @@ public class VetController {
             @Parameter(description = "Posible Imágen a actualizar")
             @RequestPart(name = "image", value = "image", required = false) MultipartFile image,
             @Parameter(description = "Posible diploma a actualizar")
-            @RequestPart(name = "degree", value = "degree") MultipartFile degree) throws IOException {
+            @RequestPart(name = "degree", value = "degree") MultipartFile degree,
+            @Parameter(description = "Decide si quieres eliminar la imagen de tu usuario o no, por defecto no se hará nada")
+            @RequestParam(name = "deleteImage", required = false) boolean deleteImg) throws IOException {
 
         Long vetID = userDetailsService.getAuthenticatedUserID();
-        ResVetDTO response = vetService.save(vetDTO, image, degree, vetID);
+        ResVetDTO response = vetService.save(vetDTO, image, degree, deleteImg, vetID);
 
         return ResponseEntity.ok(response);
     }
@@ -105,4 +113,34 @@ public class VetController {
         Long vetID = userDetailsService.getAuthenticatedUserID();
         return ResponseEntity.ok(vetService.disableVet(vetID));
     }
+
+    @PostMapping("/contact/add/{id}")
+    private ResponseEntity<ContactDTO> addContact(@PathVariable("id") Long ownerID) {
+        Long vetID = userDetailsService.getAuthenticatedUserID();
+        return ResponseEntity.ok(contactService.createContact(vetID, ownerID, vetID));
+    }
+
+    @GetMapping("/contact/list")
+    private ResponseEntity<Page<ResUserDTO>> listContacts(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String status,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Long vetID = userDetailsService.getAuthenticatedUserID();
+        return ResponseEntity.ok(
+                contactService.getVetContacts(vetID, status, name, username, email, pageable)
+        );
+    }
+
+    @DeleteMapping("/contact/remove/{id}")
+    private ResponseEntity<ContactDTO> removeContact(@PathVariable("id") Long ownerID) {
+        Long vetID = userDetailsService.getAuthenticatedUserID();
+
+        return ResponseEntity.ok(contactService.deleteContact(ownerID, vetID));
+    }
+
 }

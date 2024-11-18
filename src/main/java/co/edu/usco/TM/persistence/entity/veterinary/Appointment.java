@@ -1,6 +1,7 @@
 
 package co.edu.usco.TM.persistence.entity.veterinary;
 import co.edu.usco.TM.persistence.entity.user.UserEntity;
+import co.edu.usco.TM.persistence.entity.user.Veterinarian;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

@@ -56,7 +56,7 @@ public class UserEntity implements UserDetails, ImageEntity {
     @Column(name = "usr_phone")
     private String phone;
 
-    @Column(name = "usr_img")
+    @Column(name = "usr_image_url")
     private String imgURL;
 
     @NotNull

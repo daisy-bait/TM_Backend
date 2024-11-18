@@ -37,23 +37,27 @@ public class PetService implements IPetService {
     AgeCalculator ageCalculator;
 
     @Override
-    public ResPetDTO save(ReqPetDTO petDTO, Long ownerID, MultipartFile image, Long petID) throws IOException {
+    public ResPetDTO save(ReqPetDTO petDTO, Long ownerID, MultipartFile image, boolean deleteImg, Long petID) throws IOException {
 
-        Pet pet = petID != null ? petRepo.findById(petID).
-                orElseThrow(() -> new EntityNotFoundException()) : new Pet();
+        Pet pet;
 
-        if (pet.getId() == null) {
+        if (petID == null) {
+            pet = new Pet();
             pet.setOwner(userRepo.findOwnerById(ownerID)
                     .orElseThrow(() -> new EntityNotFoundException()));
+            pet.setEnabled(true);
+        } else {
+            pet = petRepo.findById(petID).
+                    orElseThrow(() -> new EntityNotFoundException());
         }
 
-        pet = modelMapper.map(petDTO, Pet.class);
+        modelMapper.map(petDTO, pet);
 
         if (pet.getBirthDate() != null) {
             pet.setMonths(ageCalculator.calculateMonths(pet.getBirthDate()));
         }
 
-        uploader.uploadImage(pet, image);
+        uploader.uploadImage(pet, image, deleteImg);
         petRepo.save(pet);
 
         return modelMapper.map(pet, ResPetDTO.class);

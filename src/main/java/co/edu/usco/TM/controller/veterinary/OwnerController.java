@@ -2,17 +2,16 @@ package co.edu.usco.TM.controller.veterinary;
 
 import co.edu.usco.TM.dto.request.user.ReqUserDTO;
 import co.edu.usco.TM.dto.response.user.ResUserDTO;
+import co.edu.usco.TM.dto.response.veterinary.ResVetDTO;
+import co.edu.usco.TM.dto.shared.appointment.ContactDTO;
 import co.edu.usco.TM.service.auth.UserDetailsService;
+import co.edu.usco.TM.service.toImpl.IContactService;
 import co.edu.usco.TM.service.toImpl.IOwnerService;
 import co.edu.usco.TM.service.toImpl.IUserService;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import java.io.IOException;
-import java.util.List;
-
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,6 +35,9 @@ public class OwnerController {
     IUserService userService;
 
     @Autowired
+    IContactService contactService;
+
+    @Autowired
     UserDetailsService userDetailsService;
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -47,7 +49,7 @@ public class OwnerController {
             @RequestPart(name = "image", required = false) MultipartFile file) throws IOException {
 
         ResUserDTO response;
-        response = ownerService.save(ownerDTO, file, null);
+        response = ownerService.save(ownerDTO, file, false, null);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -87,10 +89,12 @@ public class OwnerController {
             @Parameter(description = "Información para actualizar datos del Dueño.")
             @RequestPart("owner") ReqUserDTO ownerDTO,
             @Parameter(description = "Posible Imágen a actualizar")
-            @RequestPart(name = "file", value = "file", required = false) MultipartFile image) throws IOException {
+            @RequestPart(name = "image", required = false) MultipartFile image,
+            @Parameter(description = "Decide si quieres eliminar la imagen de tu usuario o no, por defecto no se hará nada")
+            @RequestParam(name = "deleteImage", required = false) boolean deleteImg) throws IOException {
 
         Long ownerID = userDetailsService.getAuthenticatedUserID();
-        ResUserDTO response = ownerService.save(ownerDTO, image, ownerID);
+        ResUserDTO response = ownerService.save(ownerDTO, image, deleteImg, ownerID);
 
         return ResponseEntity.ok(response);
     }
@@ -99,6 +103,36 @@ public class OwnerController {
     private ResponseEntity<ResUserDTO> disableOwner() {
         Long ownerID = userDetailsService.getAuthenticatedUserID();
         return ResponseEntity.ok(ownerService.disableOwner(ownerID));
+    }
+
+    @PostMapping("/contact/add/{id}")
+    private ResponseEntity<ContactDTO> addContact(@PathVariable("id") Long vetID) {
+        Long ownerID = userDetailsService.getAuthenticatedUserID();
+        return ResponseEntity.ok(contactService.createContact(ownerID, ownerID, vetID));
+    }
+
+    @GetMapping("/contact/list")
+    private ResponseEntity<Page<ResVetDTO>> listContacts(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String specialty,
+            @RequestParam(required = false) String veterinary,
+            @RequestParam(required = false) String status,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Long ownerID = userDetailsService.getAuthenticatedUserID();
+        return ResponseEntity.ok(
+                contactService.getOwnerContacts(ownerID, status, name, username, email, veterinary, specialty, pageable)
+        );
+    }
+
+    @DeleteMapping("/contact/remove/{id}")
+    private ResponseEntity<ContactDTO> removeContact(@PathVariable("id") Long vetID) {
+        Long ownerID = userDetailsService.getAuthenticatedUserID();
+        return ResponseEntity.ok(contactService.deleteContact(ownerID, vetID));
     }
 
 }

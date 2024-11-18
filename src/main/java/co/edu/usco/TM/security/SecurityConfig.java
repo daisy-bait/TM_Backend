@@ -47,8 +47,10 @@ public class SecurityConfig {
                             "/api/vet/create").permitAll();
                     request.requestMatchers(HttpMethod.GET,
                             "/api/user/find",
-                            "/api/user/owner/find",
-                            "/api/user/vet/find").permitAll();
+                            "/api/owner/find",
+                            "/api/vet/find",
+                            "/api/owner/find/{id}",
+                            "/api/vet/find/{id}").permitAll();
                     request.requestMatchers(
                             "/api/auth/**").permitAll();
                     // Swagger
@@ -61,10 +63,22 @@ public class SecurityConfig {
                             "/v3/api-docs/swagger-config").permitAll();
 
                     //Configure Private Endpoints
-                    request.requestMatchers(HttpMethod.GET, "/api/owner/details").hasRole("OWNER");
-                    request.requestMatchers(HttpMethod.PUT, "/api/owner/update").hasRole("OWNER");
-                    request.requestMatchers(HttpMethod.GET, "/api/vet/details").hasRole("VET");
-                    request.requestMatchers(HttpMethod.PUT, "/api/vet/update").hasRole("VET");
+                    request.requestMatchers(HttpMethod.GET,
+                            "/api/owner/details",
+                            "/api/owner/contact/list").hasRole("OWNER");
+                    request.requestMatchers(HttpMethod.PUT,
+                            "/api/owner/update",
+                            "/api/owner/pet/save").hasRole("OWNER");
+                    request.requestMatchers(HttpMethod.POST,
+                            "/api/owner/pet/save",
+                            "/api/owner/contact/add/{id}").hasRole("OWNER");
+                    request.requestMatchers(HttpMethod.GET,
+                            "/api/vet/details",
+                            "/api/vet/contact/list").hasRole("VET");
+                    request.requestMatchers(HttpMethod.PUT,
+                            "/api/vet/update").hasRole("VET");
+                    request.requestMatchers(HttpMethod.POST,
+                            "/api/vet/contact/add/{id}").hasRole("VET");
                     
                     // Configure No Specified Endpoints
                     request.anyRequest().authenticated();

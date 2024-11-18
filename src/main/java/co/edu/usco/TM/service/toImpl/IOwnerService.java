@@ -11,7 +11,7 @@ public interface IOwnerService {
     
     ResUserDTO findById(Long id);
     
-    ResUserDTO save(ReqUserDTO ownerDTO, MultipartFile image, Long ownerID) throws IOException;
+    ResUserDTO save(ReqUserDTO ownerDTO, MultipartFile image, boolean deleteImg, Long ownerID) throws IOException;
     
     ResUserDTO disableOwner(Long id);
     

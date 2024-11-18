@@ -46,7 +46,7 @@ public class JwtUtil {
                 .withClaim("user_id", userId) // Add User ID as Claim
                 .withClaim("roles", roles)
                 .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + (30 * 60 * 1000)))
+                .withExpiresAt(new Date(System.currentTimeMillis() + (3 * 60 * 60 * 1000)))
                 .withJWTId(UUID.randomUUID().toString())
                 .withNotBefore(new Date(System.currentTimeMillis()))
                 .sign(algorithm);
