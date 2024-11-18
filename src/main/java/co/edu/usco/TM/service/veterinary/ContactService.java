@@ -83,6 +83,7 @@ public class ContactService implements IContactService {
     private ModelMapper modelMapper;
 
     /**
+     * <h3>Crear Contacto</h3>
      * Operación encargada de verificar la existencia de usuarios a relacionar así como de instanciar dicha relación
      * mediante una instancia de la entidad {@link Contact}
      *
@@ -130,6 +131,7 @@ public class ContactService implements IContactService {
     }
 
     /**
+     * <h3>Obtener contactos de un Dueño</h3>
      * Obtiene una lista paginada de veterinarios relacionados con un dueño de mascotas específico,
      * aplicando filtros opcionales como estado de relación, nombre, nombre de usuario, veterinaria y especialidad.
      *

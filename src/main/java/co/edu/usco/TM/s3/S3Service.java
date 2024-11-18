@@ -17,7 +17,7 @@ import software.amazon.awssdk.services.s3.model.*;
  * por el IAM User kadanarpa.
  *
  * @author Kaleth Daniel Narváez Paredes
- * @see <a src="https://aws.amazon.com/es/s3/">Obten más información</a>
+ * @see <a href="https://aws.amazon.com/es/s3/">Obten más información</a>
  */
 @Service
 public class S3Service implements IS3Service {
