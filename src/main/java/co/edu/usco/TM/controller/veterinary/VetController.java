@@ -65,12 +65,12 @@ public class VetController {
             @RequestParam(required = false) String username,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String specialty,
-            @RequestParam(required = false) String veteriynary,
+            @RequestParam(required = false) String veterinary,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(userService.findAllUsers(name, username, email, "VET", pageable, specialty, veteriynary));
+        return ResponseEntity.ok(userService.findAllUsers(name, username, email, "VET", pageable, specialty, veterinary));
     }
 
     @GetMapping("/find/{id}")
@@ -98,7 +98,7 @@ public class VetController {
             @Parameter(description = "Posible Imágen a actualizar")
             @RequestPart(name = "image", value = "image", required = false) MultipartFile image,
             @Parameter(description = "Posible diploma a actualizar")
-            @RequestPart(name = "degree", value = "degree") MultipartFile degree,
+            @RequestPart(name = "degree", value = "degree", required = false) MultipartFile degree,
             @Parameter(description = "Decide si quieres eliminar la imagen de tu usuario o no, por defecto no se hará nada")
             @RequestParam(name = "deleteImage", required = false) boolean deleteImg) throws IOException {
 

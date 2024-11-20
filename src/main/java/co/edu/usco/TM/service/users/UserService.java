@@ -26,7 +26,7 @@ public class UserService implements IUserService {
     @Override
     public Page<ResUserDTO> findAllUsers(String name, String username, String email, String role, Pageable pageable, String specialty, String veterinary) {
 
-        Page<UserEntity> usersPage = userRepo.findFilteredOwners(name, username, email, role, pageable);
+        Page<UserEntity> usersPage = userRepo.findFilteredUsers(name, username, email, role, specialty, veterinary, pageable);
 
         return new PageImpl<>(
                 usersPage.stream().map(user -> mapUserToDTO(user, role)).collect(Collectors.toList()),

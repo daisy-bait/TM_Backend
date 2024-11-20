@@ -1,8 +1,10 @@
 package co.edu.usco.TM.s3;
 
 import co.edu.usco.TM.service.toImpl.IS3Service;
+
 import java.io.IOException;
 import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +18,6 @@ import software.amazon.awssdk.services.s3.model.*;
  * Web Services, utilizando el ACCESS KEY y SECRET KEY proporcionados
  * por el IAM User kadanarpa.
  *
- * @author Kaleth Daniel Narváez Paredes
  * @see <a href="https://aws.amazon.com/es/s3/">Obten más información</a>
  */
 @Service
@@ -66,7 +67,7 @@ public class S3Service implements IS3Service {
             String fileName = filePath.replace("https://tomas-pet-bucket.s3.us-east-2.amazonaws.com/", "");
             fileName = fileName.replace("%20", " ");
 
-            if(!this.doesObjectExist(fileName)) {
+            if (!this.doesObjectExist(fileName)) {
                 return "File doesn't exist";
             }
 
@@ -97,7 +98,7 @@ public class S3Service implements IS3Service {
 
             // Retornará verdadero si no hay excepciones y en efecto el archivo existe
             return true;
-        } catch(S3Exception ex) {
+        } catch (S3Exception ex) {
             if (ex.statusCode() == 404) {
                 // El objeto no existe
                 return false;

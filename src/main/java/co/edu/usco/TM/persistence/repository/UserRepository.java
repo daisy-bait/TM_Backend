@@ -28,7 +28,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             "AND (:email IS NULL OR u.email ILIKE %:email%) " +
             "AND (:role IS NULL OR r.name = :role) " +
             "AND (:role != 'VET' " +
-            "OR ((:specialty IS NULL OR v.specialty = :specialty) " +
+            "OR ((:specialty IS NULL OR v.specialty ILIKE %:specialty%) " +
             "AND (:veterinary IS NULL OR v.veterinary ILIKE %:veterinary%)))",
             nativeQuery = false)
     public Page<UserEntity> findFilteredUsers(
