@@ -1,10 +1,7 @@
 package co.edu.usco.TM.exceptions;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.persistence.EntityNotFoundException;
-import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +13,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Locale;
@@ -54,21 +49,6 @@ public class GlobalExceptionHandler {
                 new MessageResponse(
                         HttpStatus.UNAUTHORIZED.value(),
                         getMessage("unauthorized", locale),
-                        details,
-                        LocalDateTime.now()
-                ));
-    }
-
-    @ExceptionHandler(JWTVerificationException.class)
-    public ResponseEntity<MessageResponse> handleJWTVerificationException(JWTVerificationException ex, WebRequest request) {
-        Locale locale = request.getLocale();
-
-        Map<String, String> details = doDetails(ex, locale);
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                new MessageResponse(
-                        HttpStatus.UNAUTHORIZED.value(),
-                        getMessage("unauthorized.jwt.invalid", locale),
                         details,
                         LocalDateTime.now()
                 ));
@@ -122,6 +102,19 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<MessageResponse> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest webRequest) {
+        Locale locale = webRequest.getLocale();
+        Map<String, String> details = doDetails(ex, locale);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new MessageResponse(HttpStatus.BAD_REQUEST.value(),
+                        getMessage("invalid.argument", locale),
+                        details,
+                        LocalDateTime.now()
+                ));
+    }
+
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<MessageResponse> handleIllegalStateException(IllegalStateException ex, WebRequest webRequest) {
 
@@ -130,10 +123,10 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 new MessageResponse(HttpStatus.NOT_FOUND.value(),
-                getMessage(ex.getMessage(), locale),
-                details,
-                LocalDateTime.now()
-        ));
+                        getMessage(ex.getMessage(), locale),
+                        details,
+                        LocalDateTime.now()
+                ));
     }
 
     public Map<String, String> getValidationErrors(BindingResult errors, Locale locale) {

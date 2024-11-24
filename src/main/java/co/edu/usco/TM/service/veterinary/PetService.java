@@ -13,6 +13,8 @@ import co.edu.usco.TM.util.FileUploader;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -61,6 +63,15 @@ public class PetService implements IPetService {
         petRepo.save(pet);
 
         return modelMapper.map(pet, ResPetDTO.class);
+    }
+
+    @Override
+    public Page<ResPetDTO> findFilteredPets(Long ownerID, String name, String specie, Integer months, Pageable pageable) {
+
+        Page<Pet> petsPage = petRepo.findAll(ownerID, name, specie, months, pageable);
+
+        return petsPage.map(pet -> modelMapper.map(pet, ResPetDTO.class));
+
     }
 
     @Override

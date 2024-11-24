@@ -1,6 +1,7 @@
 package co.edu.usco.TM.controller.veterinary;
 
 import co.edu.usco.TM.dto.request.user.ReqUserDTO;
+import co.edu.usco.TM.dto.response.Page.PageResponse;
 import co.edu.usco.TM.dto.response.user.ResUserDTO;
 import co.edu.usco.TM.dto.response.veterinary.ResVetDTO;
 import co.edu.usco.TM.dto.shared.appointment.ContactDTO;
@@ -55,7 +56,7 @@ public class OwnerController {
     }
 
     @GetMapping("/find")
-    private ResponseEntity<Page<ResUserDTO>> findFilteredOwners(
+    private ResponseEntity<PageResponse<ResUserDTO>> findFilteredOwners(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String username,
             @RequestParam(required = false) String email,
@@ -63,7 +64,11 @@ public class OwnerController {
             @RequestParam(defaultValue = "10") Integer size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(userService.findAllUsers(name, username, email, "OWNER", pageable, null, null));
+
+        Page<ResUserDTO> ownersPage = userService.findAllUsers(name, username, email, "OWNER", pageable, null, null);
+        PageResponse<ResUserDTO> pageResponse = new PageResponse<>(ownersPage);
+
+        return ResponseEntity.ok(pageResponse);
     }
 
     @GetMapping("/find/{id}")
@@ -112,7 +117,7 @@ public class OwnerController {
     }
 
     @GetMapping("/contact/list")
-    private ResponseEntity<Page<ResVetDTO>> listContacts(
+    private ResponseEntity<PageResponse<ResVetDTO>> listContacts(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String username,
             @RequestParam(required = false) String email,
@@ -124,9 +129,11 @@ public class OwnerController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
         Long ownerID = userDetailsService.getAuthenticatedUserID();
-        return ResponseEntity.ok(
-                contactService.getOwnerContacts(ownerID, status, name, username, email, veterinary, specialty, pageable)
-        );
+
+        Page<ResVetDTO> vetsPage = contactService.getOwnerContacts(ownerID, status, name, username, email, veterinary, specialty, pageable);
+        PageResponse<ResVetDTO> pageResponse = new PageResponse<>(vetsPage);
+
+        return ResponseEntity.ok(pageResponse);
     }
 
     @DeleteMapping("/contact/remove/{id}")

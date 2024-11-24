@@ -2,6 +2,7 @@
 package co.edu.usco.TM.persistence.entity.user;
 
 import co.edu.usco.TM.persistence.entity.veterinary.Appointment;
+import co.edu.usco.TM.persistence.entity.veterinary.Contact;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -30,4 +31,7 @@ public class Veterinarian extends UserEntity{
     @OneToMany(mappedBy = "vet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Appointment> vetAppointments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "vet", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Contact> vetContacts = new ArrayList<>();
 }

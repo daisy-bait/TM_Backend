@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class ResPetDTO {
 
+    private Long id;
     private String name;
     private PetSpecie specie;
     private Double weight;

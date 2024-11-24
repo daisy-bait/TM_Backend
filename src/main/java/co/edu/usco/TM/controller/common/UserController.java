@@ -1,5 +1,6 @@
 package co.edu.usco.TM.controller.common;
 
+import co.edu.usco.TM.dto.response.Page.PageResponse;
 import co.edu.usco.TM.dto.response.user.ResUserDTO;
 import co.edu.usco.TM.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +21,18 @@ public class UserController {
     UserService userService;
 
     @GetMapping("/find")
-    public ResponseEntity<Page<ResUserDTO>> getUsers(
+    public ResponseEntity<PageResponse<ResUserDTO>> getUsers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String username,
             @RequestParam(required = false) String email,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(userService.findAllUsers(name, username, email, null, pageable, null, null ));
+
+        Page<ResUserDTO> usersPage = userService.findAllUsers(name, username, email, null, pageable, null, null );
+        PageResponse<ResUserDTO> pageResponse = new PageResponse<>(usersPage);
+
+        return ResponseEntity.ok(pageResponse);
     }
 
 }

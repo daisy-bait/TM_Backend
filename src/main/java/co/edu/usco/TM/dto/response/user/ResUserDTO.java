@@ -3,6 +3,7 @@ package co.edu.usco.TM.dto.response.user;
 
 import co.edu.usco.TM.dto.shared.appointment.AppointmentDTO;
 import co.edu.usco.TM.dto.response.veterinary.ResPetDTO;
+import co.edu.usco.TM.dto.shared.appointment.ContactDTO;
 import lombok.*;
 
 import java.util.List;
@@ -23,4 +24,5 @@ public class ResUserDTO {
 
     private List<ResPetDTO> pets;
     private List<AppointmentDTO> userAppointments;
+    private List<ContactDTO> contacts;
 }
