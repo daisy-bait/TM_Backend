@@ -2,7 +2,7 @@ package co.edu.usco.TM.service.veterinary;
 
 import co.edu.usco.TM.dto.response.user.ResUserDTO;
 import co.edu.usco.TM.dto.response.veterinary.ResVetDTO;
-import co.edu.usco.TM.dto.shared.appointment.ContactDTO;
+import co.edu.usco.TM.dto.shared.appointment.ResContactDTO;
 import co.edu.usco.TM.persistence.entity.user.UserEntity;
 import co.edu.usco.TM.persistence.entity.veterinary.Contact;
 import co.edu.usco.TM.persistence.entity.user.Veterinarian;
@@ -98,7 +98,7 @@ public class ContactService implements IContactService {
      * @throws EntityNotFoundException Si el usuario con el que se quiere crear una relación no existe como entidad
      */
     @Override
-    public ContactDTO createContact(Long originID, Long ownerID, Long vetID) throws EntityNotFoundException {
+    public ResContactDTO createContact(Long originID, Long ownerID, Long vetID) throws EntityNotFoundException {
 
         Contact contact = new Contact();
 
@@ -127,7 +127,7 @@ public class ContactService implements IContactService {
 
         contactRepo.save(contact);
 
-        return modelMapper.map(contact, ContactDTO.class);
+        return modelMapper.map(contact, ResContactDTO.class);
     }
 
     /**
@@ -157,7 +157,7 @@ public class ContactService implements IContactService {
      * @return Una instancia de {@link Page} que contiene los veterinarios relacionados con el dueño en forma de {@code ResVetDTO}.
      */
     @Override
-    public Page<ResVetDTO> getOwnerContacts(
+    public Page<ResContactDTO> getOwnerContacts(
             Long ownerID,
             String status,
             String name,
@@ -169,25 +169,43 @@ public class ContactService implements IContactService {
 
         Page<Contact> ownerContacts = contactRepo.findUserContacts(ownerID, null, status, name, username, email, specialty, veterinary, pageable);
 
-        List<ResVetDTO> referencedVets = ownerContacts
+        List<ResContactDTO> referencedVets = ownerContacts
                 .stream()
-                .map(contact -> modelMapper.map(contact.getVet(), ResVetDTO.class))
-                .collect(Collectors.toList());
+                .map(contact -> {
+                    ResContactDTO dto = new ResContactDTO();
+                    dto.setOriginID(contact.getOrigin());
+                    dto.setStatus(contact.getStatus());
+                    dto.setUser(modelMapper.map(contact.getVet(), ResVetDTO.class));
+                    return dto;
+                }).collect(Collectors.toList());
 
         return new PageImpl<>(referencedVets, pageable, ownerContacts.getTotalElements());
 
     }
 
     /**
-     * @param vetID
-     * @param status
-     * @param name
-     * @param username
-     * @param pageable
-     * @return
+     * <h3>Obtener Contactos de un Veterinario</h3>
+     * Recupera una lista paginada de dueños de mascotas que están asociados a un veterinario específico.
+     * Los resultados pueden filtrarse por diferentes criterios como estado de la relación, nombre, nombre de usuario
+     * o correo electrónico, y están organizados en una estructura de paginación.
+     *
+     * <p><b>Proceso:</b></p>
+     * <ul>
+     *     <li>Consulta las relaciones existentes en la base de datos entre el veterinario especificado y los dueños relacionados.</li>
+     *     <li>Transforma cada contacto en una instancia de {@link ResUserDTO} usando {@code ModelMapper}.</li>
+     *     <li>Devuelve una página que conserva los metadatos de paginación original.</li>
+     * </ul>
+     *
+     * @param vetID    ID del veterinario cuyos contactos (dueños de mascotas) se desean consultar.
+     * @param status   (Opcional) Filtro por estado del contacto (por ejemplo, "accepted", "pending").
+     * @param name     (Opcional) Filtro por nombre del dueño de mascotas.
+     * @param username (Opcional) Filtro por nombre de usuario del dueño.
+     * @param email    (Opcional) Filtro por correo electrónico del dueño.
+     * @param pageable Parámetros de paginación que definen la página actual y el tamaño del resultado.
+     * @return Una página de objetos {@link ResUserDTO}, representando a los dueños de mascotas relacionados.
      */
     @Override
-    public Page<ResUserDTO> getVetContacts(
+    public Page<ResContactDTO> getVetContacts(
             Long vetID,
             String status,
             String name,
@@ -197,23 +215,69 @@ public class ContactService implements IContactService {
 
         Page<Contact> vetContacts = contactRepo.findUserContacts(null, vetID, status, name, username, email, null, null, pageable);
 
-        List<ResUserDTO> referencedOwners = vetContacts
+        List<ResContactDTO> referencedOwners = vetContacts
                 .stream()
-                .map(contact -> modelMapper.map(contact.getOwner(), ResUserDTO.class))
-                .collect(Collectors.toList());
+                .map(contact -> {
+                    ResContactDTO dto = new ResContactDTO();
+                    dto.setOriginID(contact.getOrigin());
+                    dto.setStatus(contact.getStatus());
+                    dto.setUser(modelMapper.map(contact.getOwner(), ResUserDTO.class));
+                    return dto;
+                }).collect(Collectors.toList());
 
         return new PageImpl<>(referencedOwners, pageable, vetContacts.getTotalElements());
     }
 
     @Override
-    public ContactDTO deleteContact(Long ownerID, Long vetID) throws EntityNotFoundException {
+    public List<ResVetDTO> getAllOwnerContacts(Long ownerID) {
+
+        List<Contact> contacts = contactRepo.findAllOwnerContacts(ownerID);
+
+        return contacts.stream()
+                .map(contact -> modelMapper.map(contact.getVet(), ResVetDTO.class))
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<ResUserDTO> getAllVetContacts(Long vetID) {
+
+        List<Contact> contacts = contactRepo.findAllVetContacts(vetID);
+
+        return contacts.stream()
+                .map(contact -> modelMapper.map(contact.getOwner(), ResUserDTO.class))
+                .collect(Collectors.toList());
+
+    }
+
+
+    /**
+     * <h3>Eliminar Contacto</h3>
+     * Elimina una relación existente entre un dueño de mascotas y un veterinario, identificados por sus IDs.
+     * Esta operación valida que los IDs proporcionados no sean iguales y que la relación exista previamente.
+     *
+     * <p><b>Flujo de trabajo:</b></p>
+     * <ul>
+     *     <li>Verifica que los IDs del dueño y el veterinario no sean iguales.</li>
+     *     <li>Intenta recuperar el contacto desde la base de datos mediante {@code contactRepo.verifyContact}.</li>
+     *     <li>Si el contacto existe, se elimina y se transforma en un objeto {@link ResContactDTO} para devolver como respuesta.</li>
+     * </ul>
+     *
+     * @param ownerID ID del dueño de mascotas participante en la relación.
+     * @param vetID   ID del veterinario participante en la relación.
+     * @return Un {@link ResContactDTO} que representa la relación eliminada.
+     * @throws EntityNotFoundException Si no existe un contacto entre el dueño y el veterinario.
+     * @throws IllegalStateException   Si el ID del dueño y el veterinario son iguales.
+     */
+    @Override
+    public ResContactDTO deleteContact(Long ownerID, Long vetID) throws EntityNotFoundException {
 
         if (ownerID.equals(vetID)) throw new IllegalStateException("contact.sameID.exception");
 
         Contact contactToDelete = contactRepo.verifyContact(ownerID, vetID).orElseThrow(() -> new EntityNotFoundException());
         contactRepo.deleteById(contactToDelete.getId());
 
-        return modelMapper.map(contactToDelete, ContactDTO.class);
+        return modelMapper.map(contactToDelete, ResContactDTO.class);
     }
 
 }

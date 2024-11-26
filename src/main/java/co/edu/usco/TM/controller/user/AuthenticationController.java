@@ -1,5 +1,5 @@
 
-package co.edu.usco.TM.controller.common;
+package co.edu.usco.TM.controller.user;
 
 import co.edu.usco.TM.dto.auth.AuthLoginRequest;
 import co.edu.usco.TM.dto.auth.AuthResponse;

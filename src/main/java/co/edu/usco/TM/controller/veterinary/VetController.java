@@ -4,13 +4,11 @@ import co.edu.usco.TM.dto.request.veterinary.ReqVetDTO;
 import co.edu.usco.TM.dto.response.Page.PageResponse;
 import co.edu.usco.TM.dto.response.user.ResUserDTO;
 import co.edu.usco.TM.dto.response.veterinary.ResVetDTO;
-import co.edu.usco.TM.dto.shared.appointment.ContactDTO;
-import co.edu.usco.TM.persistence.entity.veterinary.Contact;
+import co.edu.usco.TM.dto.shared.appointment.ResContactDTO;
 import co.edu.usco.TM.service.auth.UserDetailsService;
 import co.edu.usco.TM.service.toImpl.IContactService;
 import co.edu.usco.TM.service.toImpl.IUserService;
 import co.edu.usco.TM.service.toImpl.IVetService;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/vet")
@@ -120,13 +119,13 @@ public class VetController {
     }
 
     @PostMapping("/contact/add/{id}")
-    private ResponseEntity<ContactDTO> addContact(@PathVariable("id") Long ownerID) {
+    private ResponseEntity<ResContactDTO> addContact(@PathVariable("id") Long ownerID) {
         Long vetID = userDetailsService.getAuthenticatedUserID();
         return ResponseEntity.ok(contactService.createContact(vetID, ownerID, vetID));
     }
 
     @GetMapping("/contact/list")
-    private ResponseEntity<PageResponse<ResUserDTO>> listContacts(
+    private ResponseEntity<PageResponse<ResContactDTO>> listContacts(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String username,
             @RequestParam(required = false) String email,
@@ -137,14 +136,21 @@ public class VetController {
         Pageable pageable = PageRequest.of(page, size);
         Long vetID = userDetailsService.getAuthenticatedUserID();
 
-        Page<ResUserDTO> ownersPage = contactService.getVetContacts(vetID, status, name, username, email, pageable);
-        PageResponse<ResUserDTO> ownersResponse = new PageResponse<>(ownersPage);
+        Page<ResContactDTO> ownersPage = contactService.getVetContacts(vetID, status, name, username, email, pageable);
+        PageResponse<ResContactDTO> ownersResponse = new PageResponse<>(ownersPage);
 
         return ResponseEntity.ok(ownersResponse);
     }
 
+    @GetMapping("/contact/list/all")
+    private ResponseEntity<List<ResUserDTO>> listAllContacts() {
+        Long vetID = userDetailsService.getAuthenticatedUserID();
+
+        return ResponseEntity.ok(contactService.getAllVetContacts(vetID));
+    }
+
     @DeleteMapping("/contact/remove/{id}")
-    private ResponseEntity<ContactDTO> removeContact(@PathVariable("id") Long ownerID) {
+    private ResponseEntity<ResContactDTO> removeContact(@PathVariable("id") Long ownerID) {
         Long vetID = userDetailsService.getAuthenticatedUserID();
 
         return ResponseEntity.ok(contactService.deleteContact(ownerID, vetID));

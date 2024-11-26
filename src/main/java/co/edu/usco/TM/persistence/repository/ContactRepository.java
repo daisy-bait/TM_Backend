@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -47,6 +48,24 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
             nativeQuery = false)
     Optional<Contact> verifyContact(
             @Param("ownerID") Long ownerID,
+            @Param("vetID") Long vetID
+    );
+
+    @Query(value = "SELECT c FROM Contact c " +
+            "LEFT JOIN c.owner o " +
+            "LEFT JOIN c.vet v " +
+            "WHERE (:ownerID IS NULL OR c.owner.id = :ownerID) ",
+            nativeQuery = false)
+    List<Contact> findAllOwnerContacts(
+            @Param("ownerID") Long ownerID
+    );
+
+    @Query(value = "SELECT c FROM Contact c " +
+            "LEFT JOIN c.owner o " +
+            "LEFT JOIN c.vet v " +
+            "WHERE (:vetID IS NULL OR c.vet.id = :vetID) ",
+            nativeQuery = false)
+    List<Contact> findAllVetContacts(
             @Param("vetID") Long vetID
     );
 }

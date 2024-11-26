@@ -5,7 +5,6 @@ import co.edu.usco.TM.dto.shared.appointment.AppointmentDTO;
 import co.edu.usco.TM.dto.response.user.ResUserDTO;
 import java.util.List;
 
-import co.edu.usco.TM.dto.shared.appointment.ContactDTO;
 import lombok.*;
 
 @Getter
@@ -18,5 +17,4 @@ public class ResVetDTO extends ResUserDTO{
     private String degreeURL;
 
     private List<AppointmentDTO> vetAppointments;
-    private List<ContactDTO> vetContacts;
 }

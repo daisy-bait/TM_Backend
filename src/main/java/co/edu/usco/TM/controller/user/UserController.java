@@ -1,4 +1,4 @@
-package co.edu.usco.TM.controller.common;
+package co.edu.usco.TM.controller.user;
 
 import co.edu.usco.TM.dto.response.Page.PageResponse;
 import co.edu.usco.TM.dto.response.user.ResUserDTO;

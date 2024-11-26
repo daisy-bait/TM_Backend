@@ -21,9 +21,9 @@ public class AppointmentDTO {
     private LocalDateTime dateTime;
     private Integer duration;
     private String status;
-    @JsonIgnoreProperties({"pets", "userAppointments"})
+    @JsonIgnoreProperties({"contacts", "pets", "userAppointments"})
     private ResUserDTO owner;
-    @JsonIgnoreProperties({"vetAppointments"})
+    @JsonIgnoreProperties({"contacts", "pets", "userAppointments", "vetAppointments", "vetContacts"})
     private ResVetDTO vet;
     private ResPetDTO pet;
     

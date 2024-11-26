@@ -27,6 +27,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             "AND (:username IS NULL OR u.username ILIKE %:username%) " +
             "AND (:email IS NULL OR u.email ILIKE %:email%) " +
             "AND (:role IS NULL OR r.name = :role) " +
+            "AND u.enabled = true " +
             "AND (:role != 'VET' " +
             "OR ((:specialty IS NULL OR v.specialty ILIKE %:specialty%) " +
             "AND (:veterinary IS NULL OR v.veterinary ILIKE %:veterinary%)))",
@@ -46,7 +47,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             "WHERE (:name IS NULL OR u.name ILIKE %:name%) " +
             "AND (:username IS NULL OR u.username ILIKE %:username%) " +
             "AND (:email IS NULL OR u.email ILIKE %:email%) " +
-            "AND (:role IS NULL OR r.name = :role) ",
+            "AND (:role IS NULL OR r.name = :role) " +
+            "AND u.enabled = true",
             nativeQuery = false)
     public Page<UserEntity> findFilteredOwners(
             @Param("name") String name,
@@ -58,6 +60,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query(value = "SELECT u FROM UserEntity u " +
             "JOIN u.roles r " +
             "WHERE u.id = :id " +
-            "AND r.name = 'OWNER'")
+            "AND r.name = 'OWNER' " +
+            "AND u.enabled = true")
     public Optional<UserEntity> findOwnerById(@Param("id") Long id);
 }

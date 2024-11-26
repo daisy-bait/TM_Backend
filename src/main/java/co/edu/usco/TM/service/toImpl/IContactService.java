@@ -2,17 +2,18 @@ package co.edu.usco.TM.service.toImpl;
 
 import co.edu.usco.TM.dto.response.user.ResUserDTO;
 import co.edu.usco.TM.dto.response.veterinary.ResVetDTO;
-import co.edu.usco.TM.dto.shared.appointment.ContactDTO;
-import co.edu.usco.TM.persistence.entity.veterinary.Contact;
+import co.edu.usco.TM.dto.shared.appointment.ResContactDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface IContactService {
 
-    public ContactDTO createContact(Long originID, Long ownerID, Long vetID) throws EntityNotFoundException;
+    public ResContactDTO createContact(Long originID, Long ownerID, Long vetID) throws EntityNotFoundException;
 
-    public Page<ResVetDTO> getOwnerContacts(
+    public Page<ResContactDTO> getOwnerContacts(
             Long ownerID,
             String status,
             String name,
@@ -22,7 +23,7 @@ public interface IContactService {
             String specialty,
             Pageable pageable);
 
-    public Page<ResUserDTO> getVetContacts(
+    public Page<ResContactDTO> getVetContacts(
             Long vetID,
             String status,
             String name,
@@ -30,6 +31,14 @@ public interface IContactService {
             String email,
             Pageable pageable);
 
-    public ContactDTO deleteContact(Long ownerID, Long vetID) throws EntityNotFoundException;
+    public List<ResVetDTO> getAllOwnerContacts(
+            Long ownerID
+    );
+
+    public List<ResUserDTO> getAllVetContacts(
+            Long vetID
+    );
+
+    public ResContactDTO deleteContact(Long ownerID, Long vetID) throws EntityNotFoundException;
 
 }
